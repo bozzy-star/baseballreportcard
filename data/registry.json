@@ -387,6 +387,38 @@
    },
    "processed_at": "2026-11-22T16:35+09:00",
    "grades_done": true
+  },
+  {
+   "key": "2026-11-22-jingu-univ-1",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-22",
+   "start": "15:00",
+   "end": "17:29",
+   "venue": "神宮",
+   "round": "2回戦",
+   "label": "大学の部 2回戦",
+   "src": "data/games/2026-11-22-jingu-univ-1.json",
+   "score": "亜細亜大 8-2 九州共立大",
+   "summary": "亜細亜大が8-2で勝利。得点経過は、3回表 亜細亜大 山里宝 安打 1点、7回表 亜細亜大 前嶋藍 内野ゴロ 1点、7回表 亜細亜大 伊藤健 安打 1点、7回表 亜細亜大 入耒田華月 安打 1点、7回表 亜細亜大 小池祐吏 安打 2点、7回表 亜細亜大 藤森一冴 安打 2点。",
+   "card_summary": "亜細亜大が8-2で勝利。得点経過は、3回表 亜細亜大 山里宝 安打 1点、7回表 亜細亜大 前嶋藍 内野ゴロ 1点、7回表 亜細亜大 伊藤健 安打 1点、7回表 亜細亜大 入耒田華月 安打 1点、7回表 亜細亜大 小池祐吏 安打 2点、7回表 亜細亜大 藤森一冴 安打 2点。",
+   "comment": "亜細亜大が8-2で勝利。",
+   "post_text": "【神宮大会 大学の部 2回戦】\n亜細亜大 8-2 九州共立大\n\n亜細亜大が勝利。\n\n野手MVP 伊藤健 7.5\n投手MVP 川尻啓人 8.5\n敢闘賞 下田悠人 8.0\n\n#神宮大会 #ベースボール通信簿\nhttps://baseballreportcard.com/games/2026-11-22-jingu-univ-1.html",
+   "text_by": "template",
+   "x_url": null,
+   "cards": [
+    "2026-11-22-jingu-univ-1-1-away.png",
+    "2026-11-22-jingu-univ-1-2-home.png"
+   ],
+   "status": "published",
+   "post_status": "draft",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053049
+   },
+   "processed_at": "2026-11-22T17:57+09:00",
+   "grades_done": true
   }
  ]
 }
