@@ -85,6 +85,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          if python -c "import json,sys;sys.exit(0 if json.load(open('data/site.json')).get('auto_post') else 1)"; then
+            echo "自動投稿モード: 確認用 Issue は作りません"; exit 0
+          fi
           python pipeline/post_pending.py draft --out /tmp/issue.md
           if [ -f /tmp/issue.md ]; then
             gh label create x-approval --color D7262E --description "X投稿の確認" --force
@@ -119,3 +122,20 @@ jobs:
 
       - id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: 自動投稿（data/site.json の auto_post が true のとき）
+        env:
+          GH_TOKEN: ${{ github.token }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_KEY_SECRET: ${{ secrets.X_API_KEY_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          if ! python -c "import json,sys;sys.exit(0 if json.load(open('data/site.json')).get('auto_post') else 1)"; then exit 0; fi
+          sleep 60
+          python pipeline/post_pending.py send --auto --report /tmp/posted.md
+          if [ -f /tmp/posted.md ]; then
+            gh issue create --title "自動投稿しました $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" --body-file /tmp/posted.md
+            git add data
+            git diff --cached --quiet || (git commit -m "自動投稿の記録 $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" && git pull -q --rebase origin main && git push origin HEAD:main)
+          fi

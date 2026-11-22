@@ -48,10 +48,10 @@ def draft(out):
     print(f"確認用の文面を作りました: {len(ps)}試合")
 
 
-def send(keys):
+def send(keys, auto=False, report=None):
     from brc.post import load_keys, upload_image, create_post
     reg = load()
-    ps = pending(reg, keys)
+    ps = pending(reg, keys, states=("pending",) if auto else ("pending", "draft"))
     if not ps:
         print("投稿する試合はありません")
         return
@@ -64,6 +64,12 @@ def send(keys):
         g["post_status"] = "posted" if pid else "error"
         save(reg)
         print(f"投稿しました: {g['key']} {g['x_url']}")
+    if report:
+        lines = ["自動で X に投稿しました。内容に問題があれば、X 上で投稿を削除してください。", ""]
+        for g in ps:
+            lines += [f"### {g['label']}　{g['score']}", f"X: {g.get('x_url') or '投稿に失敗しました'}",
+                      f"ページ: https://baseballreportcard.com/games/{g['key']}.html", "", "```", g["post_text"], "```", ""]
+        pathlib.Path(report).write_text("\n".join(lines), encoding="utf-8")
 
 
 def main():
@@ -71,11 +77,13 @@ def main():
     ap.add_argument("mode", choices=["draft", "send"])
     ap.add_argument("--out", default="/tmp/issue.md")
     ap.add_argument("--keys", default="")
+    ap.add_argument("--auto", action="store_true", help="確認なしの自動投稿（未確認の pending のみ）")
+    ap.add_argument("--report", default="")
     a = ap.parse_args()
     if a.mode == "draft":
         draft(a.out)
     else:
-        send([x for x in a.keys.split(",") if x])
+        send([x for x in a.keys.split(",") if x], auto=a.auto, report=a.report or None)
 
 
 if __name__ == "__main__":
