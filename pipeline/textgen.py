@@ -7,7 +7,8 @@ import os
 import re
 import urllib.request
 
-MODEL = os.environ.get("BRC_MODEL", "claude-sonnet-5-5")
+MODEL = os.environ.get("BRC_MODEL", "claude-opus-5-5")
+STYLE = os.path.join(os.path.dirname(__file__), "..", "data", "style.md")
 API = "https://api.anthropic.com/v1/messages"
 TYPE_JA = {"HR": "本塁打", "3B": "三塁打", "2B": "二塁打", "1B": "安打", "BB": "四球", "HBP": "死球", "SF": "犠飛", "E": "失策",
            "OUT": "内野ゴロ", "WP": "暴投", "PB": "捕逸", "DP": "併殺打"}
@@ -31,9 +32,39 @@ def facts(data, r, log, label):
         who = nm(e.get("batter")) or "（走者・守備のミス）"
         scoring.append(f"{e['inn']}回{'表' if e['half'] == 'top' else '裏'} {g[side]} {who} {TYPE_JA.get(e.get('type'), e.get('type'))} "
                        f"{runs}点（{g['away']} {score['away']}-{score['home']} {g['home']}） {(e.get('result_text') or '')[:40]}")
-    big = sorted(log, key=lambda x: -abs(x["home_wp_after"] - x["home_wp_before"]))[:4]
-    bigs = [f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'} {nm(x.get('batter'))} {x['type']} 勝利確率(ホーム) {x['home_wp_before']:.0%}→{x['home_wp_after']:.0%}"
-            for x in big]
+    # 試合が動いた場面（勝利確率の動きが大きい順）。どちらのチームから見た動きかを付ける
+    turns = []
+    for x in sorted(log, key=lambda x: -abs(x["home_wp_after"] - x["home_wp_before"]))[:5]:
+        hb, ha = x["home_wp_before"], x["home_wp_after"]
+        gain_home = ha >= hb
+        team = g["home"] if gain_home else g["away"]
+        before, after = (hb, ha) if gain_home else (1 - hb, 1 - ha)
+        off = "away" if x["half"] == "top" else "home"
+        side = "攻撃" if g[off] == team else "守り"
+        txt = next((e.get("result_text") for e in data["events"] if e.get("inn") == x["inn"] and e.get("half") == x["half"]
+                    and e.get("batter") == x.get("batter") and e.get("type") == x["type"]), "") or ""
+        turns.append(f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'}（{team}の{side}） {nm(x.get('batter'))} {TYPE_JA.get(x['type'], x['type'])} "
+                     f"→ {team}の勝利確率 {before:.0%}→{after:.0%}（{(after - before) * 100:+.0f}ポイント） {txt[:40]}")
+    # 試合の流れ（逆転・リード変更・最大点差・サヨナラ）
+    sc_ = {"away": 0, "home": 0}
+    lead, changes, max_behind = None, 0, {"away": 0, "home": 0}
+    for e in data["events"]:
+        if not e.get("runs"):
+            continue
+        sc_["away" if e["half"] == "top" else "home"] += e["runs"]
+        cur = "away" if sc_["away"] > sc_["home"] else ("home" if sc_["home"] > sc_["away"] else None)
+        if cur and lead and cur != lead:
+            changes += 1
+        if cur:
+            lead = cur
+        for t in ("away", "home"):
+            o = "home" if t == "away" else "away"
+            max_behind[t] = max(max_behind[t], sc_[o] - sc_[t])
+    ws = "home" if f["winner"] == g["home"] else "away"
+    last = log[-1] if log else {}
+    story = {"リードが入れ替わった回数": changes, "勝ったチームが最大で何点負けていたか": max_behind[ws],
+             "サヨナラ勝ち": bool(ws == "home" and last.get("half") == "bottom" and (last.get("inn") or 0) >= 9 and last.get("home_wp_before", 1) < 0.9),
+             "コールド": "コールド" in label}
     a = r["awards"]
     sc = {x["player"]: x for x in r["ratings"]}
     aw = []
@@ -47,13 +78,18 @@ def facts(data, r, log, label):
     return {
         "label": label, "away": g["away"], "home": g["home"], "final": f"{g['away']} {f['away']}-{f['home']} {g['home']}",
         "winner": f["winner"], "score_w": f"{max(f['away'], f['home'])}-{min(f['away'], f['home'])}", "innings": len(ls.get("away", [])) or None,
-        "scoring": scoring, "big_plays": bigs, "awards": aw, "pitchers": pit,
+        "scoring": scoring, "turning_points": turns, "story": story, "awards": aw, "pitchers": pit,
     }
 
 
-PROMPT = """あなたは野球の試合を伝えるライターです。下の「試合の材料」だけを使い、事実を足さずに日本語で書いてください。
-選手名は姓だけ（例：川北）。数字・回・得点経過は材料どおりに。材料にない出来事（球速、観客、天気、通算記録、過去の対戦など）は書かない。
-接戦・逆転・サヨナラなど劇的な試合は、少し色をつけた書き出しにしてよい（例：「手に汗にぎる〜」）。大差の試合は淡々と。
+PROMPT = """あなたは野球の試合を伝えるスポーツライターです。下の「書き方の指示書」に従い、「試合の材料」だけを使って日本語で書いてください。
+「turning_points」は試合が動いた場面（勝利確率が大きく動いた順）です。山場はここから選んでください。
+「story」は試合の流れの要約です（逆転・最大点差・サヨナラなど）。書き出しの見出しづくりに使ってください。
+{context}
+
+--- 書き方の指示書 ---
+{style}
+--- ここまで ---
 
 出力は次のJSONだけ（前後に何も書かない）：
 {{"summary": "試合の流れ（200〜300字。先制→同点・逆転→決着の順に）",
@@ -95,12 +131,20 @@ def _fallback(fx):
             "generated_by": "template"}
 
 
-def write_texts(data, r, log, label):
+def _style():
+    try:
+        return open(STYLE, encoding="utf-8").read()
+    except OSError:
+        return ""
+
+
+def write_texts(data, r, log, label, context="", request=""):
     fx = facts(data, r, log, label)
     key = os.environ.get("ANTHROPIC_API_KEY")
     if key:
         try:
-            out = _claude(PROMPT.format(facts=json.dumps(fx, ensure_ascii=False, indent=1)), key)
+            ctx = context + (f"\n今回は次の注文があります。必ず反映してください：{request}" if request else "")
+            out = _claude(PROMPT.format(facts=json.dumps(fx, ensure_ascii=False, indent=1), style=_style(), context=ctx), key)
             out["generated_by"] = MODEL
             return out
         except Exception as e:  # noqa: BLE001

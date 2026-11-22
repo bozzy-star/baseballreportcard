@@ -37,7 +37,7 @@ def draft(out):
         print("投稿待ちの試合はありません")
         return
     lines = ["Xへの投稿の確認です。問題なければ、この Issue に **OK** とだけコメントしてください（全試合をまとめて投稿します）。",
-             "直したい点があれば、コメントで教えてください。", ""]
+             "文章を直したいときは「**直して：〇〇**」とコメントしてください（例：直して：もっと逆転劇を強調して）。注文どおりに書き直して、新しい確認用 Issue を作ります。", ""]
     for g in ps:
         lines += [f"### {g['label']}　{g['score']}", f"ページ: https://baseballreportcard.com/games/{g['key']}.html", "", "```", g["post_text"], "```", ""]
         lines += [f"![{c}]({RAW}/{c})" for c in g.get("cards", [])] + [""]

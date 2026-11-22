@@ -36,6 +36,12 @@ def save(name, obj):
     (DATA / name).write_text(json.dumps(obj, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
+def stage_context(comp, div, rnd):
+    r = (rnd or "").split("（")[0]
+    meaning = "勝ったチームが優勝" if r == "決勝" else ("勝ったチームは決勝へ進む" if r == "準決勝" else "勝ったチームは次の試合へ進む")
+    return f"大会：{comp['formal']} {DIV_JA[div]} {r}（{meaning}）"
+
+
 def score_line(r):
     g, f = r["game"], r["final"]
     if f["winner"] == g["home"]:
@@ -66,7 +72,7 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
     label = f"{DIV_JA[div]} {rnd}"
     if innings < 9:
         label += f"（{innings}回コールド）"
-    texts = textgen.write_texts(data, r, game.log, label)
+    texts = textgen.write_texts(data, r, game.log, label, stage_context(comp, div, rnd))
     for team, gr in (meta.get("grades") or {}).items():
         players.setdefault(team, {}).update(gr)
     cmeta = {"event_name": f"{comp['formal']} {DIV_JA[div]}", "short_name": comp["short"], "start": meta.get("time"), "end": meta.get("end")}
@@ -98,16 +104,35 @@ def refresh_texts(comps, reg, log):
         data = json.loads((ROOT / g["src"]).read_text(encoding="utf-8"))
         game = Game(data)
         r = game.run()
-        t = textgen.write_texts(data, r, game.log, g["label"])
+        comp = comps[g["comp"]]
+        t = textgen.write_texts(data, r, game.log, g["label"], stage_context(comp, g["div"], g["round"]))
         if t.get("generated_by") == "template":
             continue
-        comp = comps[g["comp"]]
         g.update(summary=t.get("summary", ""), card_summary=t.get("card_summary", ""), comment=t.get("comment", ""), text_by=t["generated_by"],
                  post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, f"{SITE_URL}/games/{g['key']}.html"),
                  post_status="pending")
         cmeta = {"event_name": f"{comp['formal']} {DIV_JA[g['div']]}", "short_name": comp["short"], "start": g.get("start"), "end": g.get("end")}
         g["cards"] = [pathlib.Path(p).name for p in make_cards(r, DATA / "cards", g["card_summary"], cmeta)]
         log.append(f"  文章を書き直しました: {g['key']}")
+
+
+def rewrite(comps, reg, keys, request, log):
+    """指定した試合の文章を書き直す（Issue のコメント「直して：…」から呼ぶ）。"""
+    for g in reg["games"]:
+        if g["key"] not in keys:
+            continue
+        data = json.loads((ROOT / g["src"]).read_text(encoding="utf-8"))
+        game = Game(data)
+        r = game.run()
+        comp = comps[g["comp"]]
+        t = textgen.write_texts(data, r, game.log, g["label"], stage_context(comp, g["div"], g["round"]), request)
+        g.update(summary=t.get("summary", ""), card_summary=t.get("card_summary", ""), comment=t.get("comment", ""), text_by=t.get("generated_by"),
+                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, f"{SITE_URL}/games/{g['key']}.html"))
+        if g.get("post_status") in ("pending", "draft"):
+            g["post_status"] = "pending"
+        cmeta = {"event_name": f"{comp['formal']} {DIV_JA[g['div']]}", "short_name": comp["short"], "start": g.get("start"), "end": g.get("end")}
+        g["cards"] = [pathlib.Path(p).name for p in make_cards(r, DATA / "cards", g["card_summary"], cmeta)]
+        log.append(f"  書き直しました: {g['key']}（{t.get('generated_by')}）")
 
 
 def backfill_grades(comp, players, reg, log):
@@ -136,7 +161,17 @@ def main():
     ap.add_argument("--date", help="処理する日（既定は今日・日本時間）")
     ap.add_argument("--late", action="store_true", help="遅い時間の再確認（終わっていない試合を知らせる）")
     ap.add_argument("--out", default="/tmp/brc-run.json")
+    ap.add_argument("--rewrite", default="", help="文章を書き直す試合（カンマ区切り）")
+    ap.add_argument("--request", default="", help="書き直しの注文")
     a = ap.parse_args()
+    if a.rewrite:
+        comps = load("competitions.json", {})
+        reg = load("registry.json", {"games": []})
+        log = []
+        rewrite(comps, reg, [k for k in a.rewrite.split(",") if k], a.request, log)
+        save("registry.json", reg)
+        print("\n".join(log))
+        return
     today = a.date or dt.datetime.now(JST).date().isoformat()
     comps = load("competitions.json", {})
     reg = load("registry.json", {"games": []})

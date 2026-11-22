@@ -64,3 +64,60 @@ jobs:
           path: _site
 
       - uses: actions/deploy-pages@v4
+
+  rewrite:
+    if: >-
+      contains(github.event.issue.labels.*.name, 'x-approval') &&
+      github.event.comment.user.login == github.repository_owner &&
+      startsWith(github.event.comment.body, '直して')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 準備
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra > /dev/null
+          pip install -q pillow
+
+      - name: 文章を書き直す
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BODY: ${{ github.event.issue.body }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          KEYS=$(python -c "import os,re;m=re.search(r'<!-- keys: (.*?) -->',os.environ['BODY']);print(m.group(1) if m else '')")
+          REQ=$(python -c "import os,re;print(re.sub(r'^直して[：:\s]*','',os.environ['REQUEST']).strip())")
+          python pipeline/run.py --rewrite "$KEYS" --request "$REQ" | tee /tmp/rewrite.log
+
+      - name: サイトを作り直す
+        run: python pipeline/web/site.py _site
+
+      - name: 新しい確認用 Issue を作り、古い Issue を閉じる
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python pipeline/post_pending.py draft --out /tmp/issue.md
+          git config user.name "brc-bot"
+          git config user.email "brc-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || (git commit -m "文章の書き直し" && git push origin HEAD:main)
+          if [ -f /tmp/issue.md ]; then
+            NEW=$(gh issue create --title "X投稿の確認（書き直し） $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" --body-file /tmp/issue.md --label x-approval)
+            gh issue comment ${{ github.event.issue.number }} --body "書き直しました。新しい確認用 Issue: $NEW"
+          fi
+          gh issue close ${{ github.event.issue.number }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - uses: actions/deploy-pages@v4

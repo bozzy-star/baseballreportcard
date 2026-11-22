@@ -14,6 +14,12 @@ on:
       date:
         description: "処理する日（空なら今日）"
         default: ""
+      rewrite:
+        description: "文章を書き直す試合（カンマ区切り。空なら通常の処理）"
+        default: ""
+      request:
+        description: "書き直しの注文"
+        default: ""
 
 permissions:
   contents: write
@@ -62,6 +68,9 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           DATE="${{ github.event.inputs.date }}"
+          if [ -n "${{ github.event.inputs.rewrite }}" ]; then
+            python pipeline/run.py --rewrite "${{ github.event.inputs.rewrite }}" --request "${{ github.event.inputs.request }}"
+          fi
           python pipeline/run.py --slot ${{ steps.slot.outputs.slot }} ${{ steps.slot.outputs.late }} ${DATE:+--date $DATE} --out /tmp/brc-run.json
           cat /tmp/brc-run.json
 
