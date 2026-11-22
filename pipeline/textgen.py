@@ -121,7 +121,10 @@ def division_summary(div_name, games_lines):
 
 def post_text(comp, label, score_line, lead, r, url):
     """X投稿文（重み付き280字以内）。"""
-    from brc.post import weighted_len
+    from brc.post import weighted_len as _wl
+
+    def weighted_len(t):  # Xは URL を23文字として数える
+        return _wl(re.sub(r"https?://\S+", "x" * 23, t))
     a = r["awards"]
     sc = {x["player"]: x["score"] for x in r["ratings"]}
     lines = [f"【{comp['short']} {label}】", score_line, "", lead, ""]
