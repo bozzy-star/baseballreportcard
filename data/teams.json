@@ -1,0 +1,13 @@
+{
+ "_note": "チーム名（データ元の表記）→ URL に使う英字名。新しいチームは run.py が仮の名前（t-xxxxxx）で追加するので、あとで直してよい。",
+ "HS": {
+  "二松学舎大付": "nishogakusha", "京都国際": "kyoto-kokusai", "仙台育英": "sendai-ikuei", "創志学園": "soshi-gakuen",
+  "北海": "hokkai", "帝京長岡": "teikyo-nagaoka", "常葉大菊川": "tokoha-kikugawa", "明徳義塾": "meitoku-gijuku",
+  "横浜": "yokohama", "鹿児島城西": "kagoshima-josei"
+ },
+ "UNIV": {
+  "中京大": "chukyo", "九州共立大": "kyushu-kyoritsu", "亜細亜大": "asia", "仙台大": "sendai", "大阪商業大": "osaka-shogyo",
+  "日本体育大": "nittai", "明治大": "meiji", "東農大オホーツク": "tokyo-nodai-okhotsk", "環太平洋大": "ipu",
+  "神戸医療未来大": "kobe-iryo-mirai", "筑波大": "tsukuba"
+ }
+}

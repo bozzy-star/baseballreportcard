@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "pipeline"))
 from brc.engine import Game  # noqa: E402
 from brc.parse_yahoo import YahooParser  # noqa: E402
 from brc.card import make_cards, player_cards  # noqa: E402
+from brc import paths  # noqa: E402
 import fetch_sportsnavi as SN  # noqa: E402
 import textgen  # noqa: E402
 
@@ -83,7 +84,7 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
     except Exception as e:  # 選手カードが作れなくても試合の処理は続ける
         log.append(f"  注意（{key}）: 選手カードを作れませんでした: {e}")
         ppaths = []
-    url = f"{SITE_URL}/games/{key}.html"
+    url = paths.game_url(comp, {"key": key, "date": sg["date"], "div": div})
     entry = dict(key=key, comp=comp_id, div=div, date=sg["date"], start=meta.get("time") or "", end=meta.get("end"),
                  venue=meta.get("venue") or comp.get("venue", ""), round=rnd + (f"（{innings}回コールド）" if innings < 9 else ""),
                  label=label, src=f"data/games/{key}.json", score=score_line(r),
@@ -115,7 +116,7 @@ def refresh_texts(comps, reg, log):
         if t.get("generated_by") == "template":
             continue
         g.update(summary=t.get("summary", ""), card_summary=t.get("card_summary", ""), comment=t.get("comment", ""), text_by=t["generated_by"],
-                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, f"{SITE_URL}/games/{g['key']}.html"),
+                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, paths.game_url(comp, g)),
                  post_status="pending")
         cmeta = {"event_name": f"{comp['formal']} {DIV_JA[g['div']]}", "short_name": comp["short"], "start": g.get("start"), "end": g.get("end")}
         g["cards"] = [pathlib.Path(p).name for p in make_cards(r, DATA / "cards", g["card_summary"], cmeta)]
@@ -133,7 +134,7 @@ def rewrite(comps, reg, keys, request, log):
         comp = comps[g["comp"]]
         t = textgen.write_texts(data, r, game.log, g["label"], stage_context(comp, g["div"], g["round"]), request)
         g.update(summary=t.get("summary", ""), card_summary=t.get("card_summary", ""), comment=t.get("comment", ""), text_by=t.get("generated_by"),
-                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, f"{SITE_URL}/games/{g['key']}.html"))
+                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, paths.game_url(comp, g)))
         if g.get("post_status") in ("pending", "draft"):
             g["post_status"] = "pending"
         cmeta = {"event_name": f"{comp['formal']} {DIV_JA[g['div']]}", "short_name": comp["short"], "start": g.get("start"), "end": g.get("end")}

@@ -9,15 +9,27 @@ sys.path.insert(0, str(ROOT / "pipeline"))
 from brc.engine import Game  # noqa: E402
 
 import os as _os
-URLS = json.loads(_os.environ.get("BRC_URLS", "{}"))
+URLS = json.loads(_os.environ.get("BRC_URLS", "{}"))  # サイト内のパス（先頭の / なし）。外部URLはそのまま
+CUR = _os.environ.get("BRC_PAGE", "index.html")  # いま作っているページのパス
+
+
+def R(path):
+    """サイト内のパスを、いまのページからの相対リンクにする。"""
+    from brc.paths import rel
+    return rel(path, CUR)
 
 
 def U(key):
-    return URLS.get(key, "#")
+    v = URLS.get(key)
+    return R(v) if v else "#"
 
 
-BATTER = URLS.get("img_batter", "/_blob/2373411bf88c9be9ad6ff1153fddec34")
-PITCHER = URLS.get("img_pitcher", "/_blob/9235c2ebff7eabc2234bc6c18f59b170")
+BATTER = U("img_batter")
+PITCHER = U("img_pitcher")
+
+
+
+
 RED, NAVY, INK, SUB, LINE = "#D7262E", "#0B1A36", "#14294F", "#5B6B86", "#C9D6EA"
 
 REG = json.loads((ROOT / "data" / "registry.json").read_text(encoding="utf-8"))["games"]
@@ -43,6 +55,7 @@ L = game.log
 g, f, a = r["game"], r["final"], r["awards"]
 summary = CFG["summary"].strip()
 COMP = COMPS.get(CFG["comp"], {})
+GDIV = next(x["div"] for x in REG if x["key"] == KEY)
 AWAY, HOME = g["away"], g["home"]
 WIN = f["winner"]
 LOSE = AWAY if WIN == HOME else HOME
@@ -128,10 +141,11 @@ def nm(s):
 
 def plink(x):
     from brc.ids import player_id
-    base = URLS.get("players_dir")
-    if not base:
+    from brc import paths
+    if not COMP.get("path"):
         return nm(x["player"])
-    return f'<a href="{base}{player_id(x["team"], x["player"])}.html" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
+    href = R(paths.player_page(COMP, GDIV, x["team"], player_id(x["team"], x["player"])))
+    return f'<a href="{href}" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
 
 
 def esc(s):
@@ -352,11 +366,11 @@ def header(mobile):
     logo = 44 if mobile else 52
     nav = (f'<details style="position: relative"><summary aria-label="メニューを開く" style="list-style: none; width: 44px; height: 44px; border-radius: 10px; border: 2px solid #3D5C93; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>'
            f'<nav aria-label="メインメニュー" style="position: absolute; right: 0; top: 52px; z-index: 20; display: flex; flex-direction: column; min-width: 200px; background-color: #0B1A36; border: 2px solid #3D5C93; border-radius: 10px; padding: 6px">'
-           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournament"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
+           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournaments"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
            + '<a href="https://x.com/BaseBalltannin" style="padding: 12px 14px; color: #F3B7BA; text-decoration: none; font-weight: 900">Xでフォロー</a></nav></details>'
            if mobile else
            '<nav aria-label="メインメニュー" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px">'
-           f'<a href="{U("tournament")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">大会</a>'
+           f'<a href="{U("tournaments")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">大会</a>'
            f'<a href="{U("players")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">選手</a>'
            f'<a href="{U("archive")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">日付</a>'
            f'<a href="{U("rules")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">採点のしくみ</a>'
@@ -364,7 +378,7 @@ def header(mobile):
     return f"""  <header style="background-color: #0B1A36; border-bottom: 4px solid #D7262E">
     <div style="max-width: 1120px; margin: 0 auto; padding: {'10px 16px' if mobile else '14px 24px'}; display: flex; align-items: center; justify-content: space-between; gap: 12px">
       <a href="{U('top')}" aria-label="ベースボール通信簿 トップ" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
-        <span style="width: {logo}px; height: {logo}px; border-radius: 999px; background-color: #FFFFFF; border: 3px solid #14294F; box-shadow: 0 0 0 2px #FFFFFF; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none"><img src="{BATTER}" alt="" aria-hidden="true" style="width: 82%; height: auto; margin-top: 18%"></span>
+        <span style="width: {logo}px; height: {logo}px; border-radius: 999px; background-color: #FFFFFF; border: 3px solid #14294F; box-shadow: 0 0 0 2px #FFFFFF; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none"><img src="{U('img_batter')}" alt="" aria-hidden="true" style="width: 82%; height: auto; margin-top: 18%"></span>
         <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: {19 if mobile else 22}px; font-weight: 900; color: #FFFFFF">ベースボール<span style="border-bottom: 3px solid #D7262E">通信簿</span></span><span style="font-size: 11px; font-weight: 700; color: #9FB3D6; letter-spacing: 0.12em">BASEBALL REPORT CARD</span></span>
       </a>
       {nav}
@@ -592,7 +606,7 @@ def page(mobile):
     wrap_style = f"width: {W}px; " if mobile else ""
     order = [s for s in ("home", "away") if g[s] == WIN] + [s for s in ("home", "away") if g[s] != WIN]
     crumbs = " <span style=\"color: #5C7FBA\">›</span> ".join(
-        f'<a href="{U(k)}" style="color: #C9D6EA; text-decoration: none">{c}</a>' for c, k in (("トップ", "top"), (COMP.get("name", "大会"), "tournament"), (CFG["div"], "tournament"))) + ' <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">' + CFG["label"].split(" ")[-1] + '</span>'
+        f'<a href="{U(k)}" style="color: #C9D6EA; text-decoration: none">{c}</a>' for c, k in (("大会", "tournaments"), (COMP.get("family_name", COMP.get("short", "大会")), "family"), (str(COMP.get("year", "")), "tournament"), (f'{int(CFG["date"][5:7])}.{int(CFG["date"][8:10])}', "day:" + CFG["date"]))) + ' <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">' + CFG["label"] + '</span>'
     return f"""<div style="{wrap_style}min-height: 100vh; background-color: #0B1A36; background-image: radial-gradient(circle at 50% 0, #1A3260 0, #0B1A36 60%); color: #FFFFFF; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6">
 {header(mobile)}  <main style="max-width: 1120px; margin: 0 auto; padding: {'18px 16px 56px' if mobile else '24px 24px 72px'}; display: flex; flex-direction: column; gap: {gap}px">
     <section aria-label="試合の結果" style="display: flex; flex-direction: column; gap: 16px">

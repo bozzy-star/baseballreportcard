@@ -215,7 +215,9 @@ DAYS = D.days(COMP_ID)
 def tourney_page(m):
     gap = 44 if m else 60
     n = sum(len(gs) for _, divs in DAYS for _, gs in divs)
-    crumbs = (f'<a href="{U("top")}" style="color: #C9D6EA; text-decoration: none">トップ</a> <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">{COMP["name"]}</span>')
+    sep = ' <span style="color: #5C7FBA">›</span> '
+    crumbs = (f'<a href="{U("tournaments")}" style="color: #C9D6EA; text-decoration: none">大会</a>{sep}'
+              f'<a href="{U("family")}" style="color: #C9D6EA; text-decoration: none">{COMP.get("family_name", COMP["short"])}</a>{sep}<span style="color: #FFFFFF">{COMP.get("year", "")}</span>')
     facts = [("会期", _period(COMP)), ("会場", COMP["venue"]), ("採点した試合", f"{n}試合")]
     chips = "".join(f'<span style="display: flex; flex-direction: column; padding: {"10px 14px" if m else "12px 20px"}; border-radius: 8px; background-color: rgba(255,255,255,0.06); border: 1px solid #3D5C93">'
                     f'<span style="font-size: 11px; font-weight: 700; color: #9FB3D6; letter-spacing: 0.08em">{k}</span><span style="font-size: {16 if m else 19}px; font-weight: 900">{v}</span></span>' for k, v in facts)
