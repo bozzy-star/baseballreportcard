@@ -9,15 +9,27 @@ sys.path.insert(0, str(ROOT / "pipeline"))
 from brc.engine import Game  # noqa: E402
 
 import os as _os
-URLS = json.loads(_os.environ.get("BRC_URLS", "{}"))
+URLS = json.loads(_os.environ.get("BRC_URLS", "{}"))  # サイト内のパス（先頭の / なし）。外部URLはそのまま
+CUR = _os.environ.get("BRC_PAGE", "index.html")  # いま作っているページのパス
+
+
+def R(path):
+    """サイト内のパスを、いまのページからの相対リンクにする。"""
+    from brc.paths import rel
+    return rel(path, CUR)
 
 
 def U(key):
-    return URLS.get(key, "#")
+    v = URLS.get(key)
+    return R(v) if v else "#"
 
 
-BATTER = URLS.get("img_batter", "/_blob/2373411bf88c9be9ad6ff1153fddec34")
-PITCHER = URLS.get("img_pitcher", "/_blob/9235c2ebff7eabc2234bc6c18f59b170")
+BATTER = U("img_batter")
+PITCHER = U("img_pitcher")
+
+
+
+
 RED, NAVY, INK, SUB, LINE = "#D7262E", "#0B1A36", "#14294F", "#5B6B86", "#C9D6EA"
 
 REG = json.loads((ROOT / "data" / "registry.json").read_text(encoding="utf-8"))["games"]
@@ -43,6 +55,7 @@ L = game.log
 g, f, a = r["game"], r["final"], r["awards"]
 summary = CFG["summary"].strip()
 COMP = COMPS.get(CFG["comp"], {})
+GDIV = next(x["div"] for x in REG if x["key"] == KEY)
 AWAY, HOME = g["away"], g["home"]
 WIN = f["winner"]
 LOSE = AWAY if WIN == HOME else HOME
@@ -128,22 +141,46 @@ def nm(s):
 
 def plink(x):
     from brc.ids import player_id
-    base = URLS.get("players_dir")
-    if not base:
+    from brc import paths
+    if not COMP.get("path"):
         return nm(x["player"])
-    return f'<a href="{base}{player_id(x["team"], x["player"])}.html" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
+    href = R(paths.player_page(COMP, GDIV, x["team"], player_id(x["team"], x["player"])))
+    return f'<a href="{href}" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
 
 
 def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;")
 
 
-HANAMARU = ('<svg viewBox="0 0 100 100" width="{w}" height="{w}" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
-            'transform: translateX(-50%); opacity: 0.35"><g fill="none" stroke="#D7262E" stroke-width="4" stroke-linecap="round">'
-            + "".join(f'<circle cx="{cx}" cy="{cy}" r="11"></circle>' for cx, cy in [
-                (84.0, 50.0), (79.4, 67.0), (67.0, 79.4), (50.0, 84.0), (33.0, 79.4), (20.6, 67.0), (16.0, 50.0),
-                (20.6, 33.0), (33.0, 20.6), (50.0, 16.0), (67.0, 20.6), (79.4, 33.0)])
-            + '<path d="M50 50 m-4 0 a4 4 0 1 1 8 0 a8 8 0 1 1 -16 0 a12 12 0 1 1 24 0 a16 16 0 1 1 -32 0"></path></g></svg>')
+HANAMARU = ('<img src="' + U("img_hanamaru") + '" alt="" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
+            'transform: translateX(-50%); width: {w}px; height: {w}px; opacity: 0.35">')
+HANAMARU_AT = 8.5  # この点以上に花丸
+
+
+def hanamaru(w, t):
+    """ページごとに相対リンクを作り直す版（選手ページなど、1回の実行で複数ページを作るとき用）。"""
+    return (f'<img src="{img_url("hanamaru")}" alt="" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
+            f'transform: translateX(-50%); width: {w}px; height: {w}px; opacity: 0.35">')
+
+
+def img_url(name):
+    """バッジ画像のリンク（assets/badges/）。"""
+    return R(f"assets/badges/{name}.png")
+
+
+def face(score, size=18):
+    """点数に応じた顔マーク（7.0以上＝にっこり、6.0〜6.5＝ふつう、6.0未満＝こまり顔）。"""
+    name = "face-good" if score >= 7.0 else ("face-ok" if score >= 6.0 else "face-bad")
+    alt = {"face-good": "よくできました", "face-ok": "及第点", "face-bad": "もう少し"}[name]
+    return f'<img src="{img_url(name)}" alt="{alt}" title="{alt}" style="width: {size}px; height: {size}px; vertical-align: middle; flex: none">'
+
+
+def badge(award, size=22):
+    """表彰のバッジ（野手MVP・投手MVP＝MVP、敢闘賞）。"""
+    if not award:
+        return ""
+    name = "kanto" if award == "敢闘賞" else "mvp"
+    return f'<img src="{img_url(name)}" alt="{award}" title="{award}" style="width: {size}px; height: {size}px; vertical-align: middle; flex: none">'
 
 # 試合を動かしたプレー（上位3）
 TYPE_JA = {"HR": "本塁打", "3B": "三塁打", "2B": "二塁打", "1B": "ヒット"}
@@ -352,11 +389,11 @@ def header(mobile):
     logo = 44 if mobile else 52
     nav = (f'<details style="position: relative"><summary aria-label="メニューを開く" style="list-style: none; width: 44px; height: 44px; border-radius: 10px; border: 2px solid #3D5C93; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>'
            f'<nav aria-label="メインメニュー" style="position: absolute; right: 0; top: 52px; z-index: 20; display: flex; flex-direction: column; min-width: 200px; background-color: #0B1A36; border: 2px solid #3D5C93; border-radius: 10px; padding: 6px">'
-           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournament"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
+           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournaments"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
            + '<a href="https://x.com/BaseBalltannin" style="padding: 12px 14px; color: #F3B7BA; text-decoration: none; font-weight: 900">Xでフォロー</a></nav></details>'
            if mobile else
            '<nav aria-label="メインメニュー" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px">'
-           f'<a href="{U("tournament")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">大会</a>'
+           f'<a href="{U("tournaments")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">大会</a>'
            f'<a href="{U("players")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">選手</a>'
            f'<a href="{U("archive")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">日付</a>'
            f'<a href="{U("rules")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">採点のしくみ</a>'
@@ -364,7 +401,7 @@ def header(mobile):
     return f"""  <header style="background-color: #0B1A36; border-bottom: 4px solid #D7262E">
     <div style="max-width: 1120px; margin: 0 auto; padding: {'10px 16px' if mobile else '14px 24px'}; display: flex; align-items: center; justify-content: space-between; gap: 12px">
       <a href="{U('top')}" aria-label="ベースボール通信簿 トップ" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
-        <span style="width: {logo}px; height: {logo}px; border-radius: 999px; background-color: #FFFFFF; border: 3px solid #14294F; box-shadow: 0 0 0 2px #FFFFFF; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none"><img src="{BATTER}" alt="" aria-hidden="true" style="width: 82%; height: auto; margin-top: 18%"></span>
+        <span style="width: {logo}px; height: {logo}px; border-radius: 999px; background-color: #FFFFFF; border: 3px solid #14294F; box-shadow: 0 0 0 2px #FFFFFF; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none"><img src="{U('img_batter')}" alt="" aria-hidden="true" style="width: 82%; height: auto; margin-top: 18%"></span>
         <span style="display: flex; flex-direction: column; line-height: 1.15"><span style="font-size: {19 if mobile else 22}px; font-weight: 900; color: #FFFFFF">ベースボール<span style="border-bottom: 3px solid #D7262E">通信簿</span></span><span style="font-size: 11px; font-weight: 700; color: #9FB3D6; letter-spacing: 0.12em">BASEBALL REPORT CARD</span></span>
       </a>
       {nav}
@@ -437,7 +474,7 @@ def award_cards(mobile):
         if not mobile:
             out.append(f"""<div class="sheet" style="display: flex; align-items: stretch; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="flex: none; width: 128px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 14px 16px; background-color: {band}; color: #FFFFFF">
-                <span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{x["team"]}</span></div>
+                <span style="display: inline-flex; padding: 3px; background-color: #FFFFFF; border-radius: 999px; align-self: flex-start; margin-bottom: 4px">{badge(label, 44)}</span><span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{x["team"]}</span></div>
               <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 14px 20px">
                 <span style="display: flex; align-items: center; gap: 12px; flex: none">
                   <img src="{ico}" alt="" aria-hidden="true" style="width: 52px; height: auto; flex: none">
@@ -450,7 +487,7 @@ def award_cards(mobile):
                 </span>
               </div>
               <div style="flex: none; width: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px 0">
-                {HANAMARU.format(w=88, t=0) if x['score'] >= 9.5 else ''}
+                {HANAMARU.format(w=88, t=0) if x['score'] >= HANAMARU_AT else ''}
                 <span class="hand" style="font-size: 56px; color: {band}; line-height: 1; position: relative">{x['score']:.1f}</span>
                 {f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 1px 8px; border-radius: 999px; position: relative; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if over else ''}
               </div>
@@ -458,7 +495,7 @@ def award_cards(mobile):
             continue
         out.append(f"""<div class="sheet" style="display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background-color: {band}; color: #FFFFFF">
-                <span style="font-size: 15px; font-weight: 900; letter-spacing: 0.05em">{label}</span>
+                <span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-flex; padding: 2px; background-color: #FFFFFF; border-radius: 999px">{badge(label, 30)}</span><span style="font-size: 15px; font-weight: 900; letter-spacing: 0.05em">{label}</span></span>
                 <span style="font-size: 13px; font-weight: 700; white-space: nowrap">{x["team"]}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px 10px">
@@ -468,7 +505,7 @@ def award_cards(mobile):
                   <span style="font-size: 14px; font-weight: 700; color: {SUB}">{role}</span>
                 </span>
                 <span style="display: flex; flex-direction: column; align-items: center; flex: none; position: relative; min-width: 84px">
-                  {HANAMARU.format(w=80, t=-12) if x['score'] >= 9.5 else ''}
+                  {HANAMARU.format(w=80, t=-12) if x['score'] >= HANAMARU_AT else ''}
                   <span class="hand" style="font-size: 52px; color: {band}; line-height: 1; position: relative">{x['score']:.1f}</span>
                   {f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 1px 8px; border-radius: 999px; position: relative; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if over else ''}
                 </span>
@@ -521,7 +558,8 @@ def team_table(side, mobile):
 
     def mark(x):
         aw = award_of(x)
-        return f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: #D7262E; padding: 1px 8px; border-radius: 999px; margin-left: 6px; white-space: nowrap">{aw}</span>' if aw else ""
+        return (f'<span style="display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; vertical-align: middle">{badge(aw, 24)}'
+                f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: #D7262E; padding: 1px 8px; border-radius: 999px; white-space: nowrap">{aw}</span></span>') if aw else ""
 
     if mobile:
         def card(x, kind):
@@ -540,7 +578,7 @@ def team_table(side, mobile):
             wc = "#2E9E6B" if x['wpa'] >= 0.005 else (RED if x['wpa'] <= -0.005 else SUB)
             hl = "background-color: #FFF4D6; " if award_of(x) else ""
             return f"""<div style="{hl}display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 9px 2px; border-bottom: 1px solid {LINE}">
-                <span style="flex: none; width: 52px; display: flex; flex-direction: column; align-items: center"><span class="hand" style="font-size: 32px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="font-size: 9px; font-weight: 900; color: {RED}; white-space: nowrap">突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</span>
+                <span style="flex: none; width: 52px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span class="hand" style="font-size: 32px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{face(x['score'], 18)}{f'<span style="font-size: 9px; font-weight: 900; color: {RED}; white-space: nowrap">突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</span>
                 <span style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1px">
                   <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px"><span style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{plink(x)}{mark(x)}</span><span style="font-size: 12px; font-weight: 900; color: {wc}; white-space: nowrap; font-variant-numeric: tabular-nums">{x['wpa'] * 100:+.0f}%</span></span>
                   <span style="font-size: 12px; color: {SUB}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{order}{pos}　{x['stat']}</span>
@@ -568,7 +606,7 @@ def team_table(side, mobile):
                 {f'<td style="color: {SUB}">{x.get("number") or ""}</td>' if HAS_NUM else ''}
                 <td><span style="display: block; font-weight: 900; font-size: 16px; white-space: nowrap">{plink(x)}{mark(x)}</span><span style="display: block; font-size: 12px; color: {SUB}; max-width: 15em; line-height: 1.5">{x['stat']}</span></td>
                 <td style="white-space: nowrap">{bar(x['wpa'], 40)}</td>
-                <td style="text-align: center; white-space: nowrap"><span class="hand" style="font-size: 30px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</td>
+                <td style="text-align: center; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 6px">{face(x['score'], 22)}<span class="hand" style="font-size: 30px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span></span>{f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</td>
                 <td style="width: 100%"><div class="cm" style="font-size: 13px; line-height: 1.6; min-width: 44em">{esc(x['comment'])}</div></td>
               </tr>"""
     thead = f'<tr><th scope="col">打順</th><th scope="col">守備</th>{'<th scope="col">背番号</th>' if HAS_NUM else ''}<th scope="col">選手・成績</th><th scope="col">貢献度</th><th scope="col" style="text-align: center">採点</th><th scope="col">担任からの一言</th></tr>'
@@ -592,7 +630,7 @@ def page(mobile):
     wrap_style = f"width: {W}px; " if mobile else ""
     order = [s for s in ("home", "away") if g[s] == WIN] + [s for s in ("home", "away") if g[s] != WIN]
     crumbs = " <span style=\"color: #5C7FBA\">›</span> ".join(
-        f'<a href="{U(k)}" style="color: #C9D6EA; text-decoration: none">{c}</a>' for c, k in (("トップ", "top"), (COMP.get("name", "大会"), "tournament"), (CFG["div"], "tournament"))) + ' <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">' + CFG["label"].split(" ")[-1] + '</span>'
+        f'<a href="{U(k)}" style="color: #C9D6EA; text-decoration: none">{c}</a>' for c, k in (("大会", "tournaments"), (COMP.get("family_name", COMP.get("short", "大会")), "family"), (str(COMP.get("year", "")), "tournament"), (f'{int(CFG["date"][5:7])}.{int(CFG["date"][8:10])}', "day:" + CFG["date"]))) + ' <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">' + CFG["label"] + '</span>'
     return f"""<div style="{wrap_style}min-height: 100vh; background-color: #0B1A36; background-image: radial-gradient(circle at 50% 0, #1A3260 0, #0B1A36 60%); color: #FFFFFF; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6">
 {header(mobile)}  <main style="max-width: 1120px; margin: 0 auto; padding: {'18px 16px 56px' if mobile else '24px 24px 72px'}; display: flex; flex-direction: column; gap: {gap}px">
     <section aria-label="試合の結果" style="display: flex; flex-direction: column; gap: 16px">

@@ -17,6 +17,11 @@ RAW = f"https://raw.githubusercontent.com/{REPO}/main/data/cards"
 REG_PATH = ROOT / "data" / "registry.json"
 
 
+def page_url(g):
+    from brc import paths
+    return paths.game_url(paths.comps()[g["comp"]], g)
+
+
 def load():
     return json.loads(REG_PATH.read_text(encoding="utf-8"))
 
@@ -39,7 +44,7 @@ def draft(out):
     lines = ["Xへの投稿の確認です。問題なければ、この Issue に **OK** とだけコメントしてください（全試合をまとめて投稿します）。",
              "文章を直したいときは「**直して：〇〇**」とコメントしてください（例：直して：もっと逆転劇を強調して）。注文どおりに書き直して、新しい確認用 Issue を作ります。", ""]
     for g in ps:
-        lines += [f"### {g['label']}　{g['score']}", f"ページ: https://baseballreportcard.com/games/{g['key']}.html", "", "```", g["post_text"], "```", ""]
+        lines += [f"### {g['label']}　{g['score']}", f"ページ: {page_url(g)}", "", "```", g["post_text"], "```", ""]
         lines += [f"![{c}]({RAW}/{c})" for c in (g.get("player_cards", []) + g.get("cards", []))[:4]] + [""]
         g["post_status"] = "draft"
     lines.append(f"<!-- keys: {','.join(g['key'] for g in ps)} -->")
@@ -69,7 +74,7 @@ def send(keys, auto=False, report=None):
         lines = ["自動で X に投稿しました。内容に問題があれば、X 上で投稿を削除してください。", ""]
         for g in ps:
             lines += [f"### {g['label']}　{g['score']}", f"X: {g.get('x_url') or '投稿に失敗しました'}",
-                      f"ページ: https://baseballreportcard.com/games/{g['key']}.html", "", "```", g["post_text"], "```", ""]
+                      f"ページ: {page_url(g)}", "", "```", g["post_text"], "```", ""]
         pathlib.Path(report).write_text("\n".join(lines), encoding="utf-8")
 
 

@@ -349,13 +349,17 @@ def player_card(r, x, label, path, meta=None):
     short = meta.get("short_name") or g.get("tournament", "").split(" ")[0]
     ev = f"{short} {g.get('round', '')}".strip()
     d.text((W - 60, 44), ev, font=fit(d, ev, "Medium", 24, 520), fill=SUB, anchor="ra")
-    # ラベル
+    # ラベル（MVP・敢闘賞のバッジ＋文字）
+    bpath = ASSETS / ("kanto.png" if label == "敢闘賞" else "mvp.png")
+    if bpath.exists():
+        b = Image.open(bpath).convert("RGBA").resize((150, 150), Image.LANCZOS)
+        img.paste(b, (W - 60 - 150, 96), b)
     lw = d.textlength(label, font=F("Black", 40)) + 56
     d.rounded_rectangle((60, 110, 60 + lw, 176), radius=33, fill=GOLD)
     d.text((60 + lw / 2, 143), label, font=F("Black", 40), fill=NAVY, anchor="mm")
     # 名前と所属
     nm = x["player"].replace(" ", "")
-    d.text((60, 206), nm, font=fit(d, nm, "Black", 118, W - 120), fill=INK)
+    d.text((60, 206), nm, font=fit(d, nm, "Black", 118, W - 300), fill=INK)
     sub = player_meta(x, g.get("league"))
     if meta.get("grade"):
         sub = sub.replace("　", f"（{meta['grade']}）　", 1)

@@ -7,7 +7,7 @@
   "end": "2026-11-24",
   "buffer_days": 3,
   "venue": "神宮球場",
-  "page": "tournaments/jingu-2026.html",
+  "page": "tournaments/jingu/2026/index.html",
   "slug": "jingu",
   "hashtags": [
    "#神宮大会"
@@ -33,6 +33,11 @@
      "id_to": 2021053053
     }
    }
-  ]
+  ],
+  "family": "jingu",
+  "family_name": "明治神宮大会",
+  "year": 2026,
+  "path": "tournaments/jingu/2026/",
+  "legacy_page": "tournaments/jingu-2026.html"
  }
 }

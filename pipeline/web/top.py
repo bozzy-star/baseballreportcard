@@ -87,7 +87,7 @@ def hero_card(h, m):
     img = B.BATTER if h["img"] == "batter" else B.PITCHER
     over = h["raw"] > 10
     badge = (f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 2px 10px; border-radius: 999px; position: relative">上限突破！ {h["raw"]:.1f}</span>' if over else "")
-    flower = B.HANAMARU.format(w=84 if m else 104, t=-12) if h["score"] >= 9.5 else ""
+    flower = B.HANAMARU.format(w=84 if m else 104, t=-12) if h["score"] >= B.HANAMARU_AT else ""
     return f"""<div class="paper" style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: 8px; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
             <div style="display: flex; align-items: center; gap: {12 if m else 18}px">
               <img src="{img}" alt="" aria-hidden="true" style="width: {72 if m else 96}px; height: auto; flex: none">
@@ -215,7 +215,9 @@ DAYS = D.days(COMP_ID)
 def tourney_page(m):
     gap = 44 if m else 60
     n = sum(len(gs) for _, divs in DAYS for _, gs in divs)
-    crumbs = (f'<a href="{U("top")}" style="color: #C9D6EA; text-decoration: none">トップ</a> <span style="color: #5C7FBA">›</span> <span style="color: #FFFFFF">{COMP["name"]}</span>')
+    sep = ' <span style="color: #5C7FBA">›</span> '
+    crumbs = (f'<a href="{U("tournaments")}" style="color: #C9D6EA; text-decoration: none">大会</a>{sep}'
+              f'<a href="{U("family")}" style="color: #C9D6EA; text-decoration: none">{COMP.get("family_name", COMP["short"])}</a>{sep}<span style="color: #FFFFFF">{COMP.get("year", "")}</span>')
     facts = [("会期", _period(COMP)), ("会場", COMP["venue"]), ("採点した試合", f"{n}試合")]
     chips = "".join(f'<span style="display: flex; flex-direction: column; padding: {"10px 14px" if m else "12px 20px"}; border-radius: 8px; background-color: rgba(255,255,255,0.06); border: 1px solid #3D5C93">'
                     f'<span style="font-size: 11px; font-weight: 700; color: #9FB3D6; letter-spacing: 0.08em">{k}</span><span style="font-size: {16 if m else 19}px; font-weight: 900">{v}</span></span>' for k, v in facts)
@@ -270,7 +272,8 @@ def tourney_page(m):
     return f"""<div style="min-height: 100vh; background-color: #0B1A36; background-image: radial-gradient(circle at 50% 0, #1A3260 0, #0B1A36 60%); color: #FFFFFF; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6">
 {B.header(m)}  <main style="max-width: 1120px; margin: 0 auto; padding: {'18px 16px 56px' if m else '24px 24px 72px'}; display: flex; flex-direction: column; gap: {gap}px">
     <div style="display: flex; flex-direction: column; gap: 14px"><nav aria-label="パンくずリスト" style="font-size: 13px">{crumbs}</nav>{hero}</div>
-    <section aria-label="部ごとの状況" style="display: flex; flex-direction: column; gap: 36px">{h2('大会の状況', m)}{divs}{note}</section>
+    <section aria-label="部ごとの状況" style="display: flex; flex-direction: column; gap: 36px">{h2('大会の状況', m)}{divs}{note}
+      <a href="{U('players')}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background-color: {RED}; color: #FFFFFF; text-decoration: none; font-weight: 900; font-size: {16 if m else 18}px">選手一覧（大学の部・高校の部）を見る →</a></section>
     <section id="archive" aria-label="日付ごとの試合" style="display: flex; flex-direction: column; gap: 28px">{h2('日付ごとの試合', m)}{days}</section>
     <a href="{U('rules')}" style="align-self: flex-start; font-size: 14px; font-weight: 700; color: #F3B7BA">採点のしくみ →</a>
   </main>
