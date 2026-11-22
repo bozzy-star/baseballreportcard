@@ -19,6 +19,11 @@ GTM_HEAD = (f"""<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.sta
 """ if GTM else "")
 GTM_BODY = (f"""<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 """ if GTM else "")
+GA4 = (SITECFG.get("ga4_id") or "").strip()
+if GA4 and not GTM:
+    GTM_HEAD = f"""<script async src="https://www.googletagmanager.com/gtag/js?id={GA4}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA4}');</script>
+"""
 
 
 def urls(depth, extra=None):
