@@ -85,6 +85,29 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
     return entry
 
 
+def refresh_texts(comps, reg, log):
+    """定型文のまま投稿前の試合を、APIキーが使えるようになったら書き直す。"""
+    import os
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        return
+    for g in reg["games"]:
+        if g.get("text_by") != "template" or g.get("post_status") not in ("pending", "draft"):
+            continue
+        data = json.loads((ROOT / g["src"]).read_text(encoding="utf-8"))
+        game = Game(data)
+        r = game.run()
+        t = textgen.write_texts(data, r, game.log, g["label"])
+        if t.get("generated_by") == "template":
+            continue
+        comp = comps[g["comp"]]
+        g.update(summary=t.get("summary", ""), card_summary=t.get("card_summary", ""), comment=t.get("comment", ""), text_by=t["generated_by"],
+                 post_text=textgen.post_text(comp, g["label"], g["score"], t.get("post_lead", ""), r, f"{SITE_URL}/games/{g['key']}.html"),
+                 post_status="pending")
+        cmeta = {"event_name": f"{comp['formal']} {DIV_JA[g['div']]}", "short_name": comp["short"], "start": g.get("start"), "end": g.get("end")}
+        g["cards"] = [pathlib.Path(p).name for p in make_cards(r, DATA / "cards", g["card_summary"], cmeta)]
+        log.append(f"  文章を書き直しました: {g['key']}")
+
+
 def backfill_grades(comp, players, reg, log):
     """学年が未登録の試合（過去分）を、試合ページの選手一覧から補う。"""
     done = set()
@@ -149,6 +172,7 @@ def main():
             s = textgen.division_summary(DIV_JA[div], lines)
             if s:
                 divtext.setdefault(cid, {})[div] = {"summary": s, "updated": today}
+    refresh_texts(comps, reg, log)
     reg["games"].sort(key=lambda g: (g["date"], int((g.get("start") or "0:0").split(":")[0]) * 60 + int((g.get("start") or "0:0").split(":")[1])))
     save("registry.json", reg)
     save("players.json", players)
