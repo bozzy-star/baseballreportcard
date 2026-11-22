@@ -1,0 +1,1083 @@
+{
+ "game": {
+  "round": "準々決勝",
+  "away": "明徳義塾",
+  "home": "二松学舎大付",
+  "linescore": {
+   "away": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0"
+   ],
+   "home": [
+    "2",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "X"
+   ]
+  },
+  "date": "2026-11-20",
+  "tournament": "明治神宮大会 高校の部",
+  "league": "HS",
+  "id": "jingu-hs-2026-qf1"
+ },
+ "lineups": {
+  "away": {
+   "CF": "山根 太陽",
+   "2B": "田内 望夢",
+   "3B": "三沢 隼",
+   "1B": "宮崎 礼治",
+   "DH": "後藤 大豪",
+   "C": "成 真佑",
+   "RF": "岡本 琥之介",
+   "LF": "松井 大河",
+   "SS": "池田 陸",
+   "P": "藤本 優善"
+  },
+  "home": {
+   "RF": "高須 翔己",
+   "CF": "若村 駿希",
+   "2B": "納崎 塁斗",
+   "DH": "小田切 豪",
+   "1B": "早川 幸汰",
+   "LF": "勝田 陵聖",
+   "3B": "内間 叶琉",
+   "SS": "坂井 誠史郎",
+   "C": "控井 元幹",
+   "P": "川島 連十"
+  }
+ },
+ "events": [
+  {
+   "batter": "山根 太陽",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 1,
+   "half": "top",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "田内 望夢",
+   "type": "SH",
+   "result_text": "三犠打",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 1,
+   "half": "top",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "三沢 隼",
+   "type": "OUT",
+   "result_text": "二ゴロ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 1,
+   "half": "top",
+   "outs": 2,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "宮崎 礼治",
+   "type": "OUT",
+   "result_text": "三ゴロ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 1,
+   "half": "top",
+   "outs": 3,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "高須 翔己",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "若村 駿希",
+   "type": "SH",
+   "result_text": "二犠打",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 1,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "納崎 塁斗",
+   "type": "1B",
+   "result_text": "内野安打",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "13",
+   "runs": 0
+  },
+  {
+   "type": "CS",
+   "runner": "納崎 塁斗",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "小田切 豪",
+   "type": "3B",
+   "result_text": "左中間適時三塁打",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 1,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "3",
+   "runs": 1
+  },
+  {
+   "batter": "早川 幸汰",
+   "type": "E",
+   "result_text": "投ゴロ失策",
+   "fielders": [
+    "P"
+   ],
+   "error_by": "P",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 1
+  },
+  {
+   "batter": "勝田 陵聖",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "後藤 大豪",
+   "type": "K",
+   "result_text": "見逃し三振",
+   "inn": 2,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "成 真佑",
+   "type": "OUT",
+   "result_text": "一ゴロ",
+   "fielders": [
+    "1B"
+   ],
+   "inn": 2,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "岡本 琥之介",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 2,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "内間 叶琉",
+   "type": "OUT",
+   "result_text": "左邪飛",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 2,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "坂井 誠史郎",
+   "type": "OUT",
+   "result_text": "右飛",
+   "fielders": [
+    "RF"
+   ],
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "控井 元幹",
+   "type": "1B",
+   "result_text": "中安打",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "runner": "控井 元幹",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "高須 翔己",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 2,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "松井 大河",
+   "type": "OUT",
+   "result_text": "バント投飛",
+   "fielders": [
+    "P"
+   ],
+   "inn": 3,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "池田 陸",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 3,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "山根 太陽",
+   "type": "OUT",
+   "result_text": "三飛",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 3,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "若村 駿希",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 3,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "納崎 塁斗",
+   "type": "2B",
+   "result_text": "レフトへのツーベースヒット",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 3,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "小田切 豪",
+   "type": "OUT",
+   "result_text": "一ゴロ",
+   "fielders": [
+    "1B"
+   ],
+   "inn": 3,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "早川 幸汰",
+   "type": "OUT",
+   "result_text": "一ゴロ",
+   "fielders": [
+    "1B"
+   ],
+   "inn": 3,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "田内 望夢",
+   "type": "OUT",
+   "result_text": "三ゴロ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 4,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "三沢 隼",
+   "type": "OUT",
+   "result_text": "二ゴロ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 4,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "宮崎 礼治",
+   "type": "2B",
+   "result_text": "レフトへのツーベースヒット",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 4,
+   "half": "top",
+   "outs": 2,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "後藤 大豪",
+   "type": "OUT",
+   "result_text": "二ゴロ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 4,
+   "half": "top",
+   "outs": 3,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "勝田 陵聖",
+   "type": "OUT",
+   "result_text": "投ゴロ",
+   "fielders": [
+    "P"
+   ],
+   "inn": 4,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "内間 叶琉",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 4,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "坂井 誠史郎",
+   "type": "OUT",
+   "result_text": "左飛",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 4,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "成 真佑",
+   "type": "K",
+   "result_text": "見逃し三振",
+   "inn": 5,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "岡本 琥之介",
+   "type": "OUT",
+   "result_text": "遊直",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "松井 大河",
+   "type": "E",
+   "result_text": "二ゴロ失策",
+   "fielders": [
+    "2B"
+   ],
+   "error_by": "2B",
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "池田 陸",
+   "type": "OUT",
+   "result_text": "二飛",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 5,
+   "half": "top",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "控井 元幹",
+   "type": "OUT",
+   "result_text": "右飛",
+   "fielders": [
+    "RF"
+   ],
+   "inn": 5,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "高須 翔己",
+   "type": "1B",
+   "result_text": "中安打",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 5,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "若村 駿希",
+   "type": "SH",
+   "result_text": "投犠打",
+   "fielders": [
+    "P"
+   ],
+   "inn": 5,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "納崎 塁斗",
+   "type": "3B",
+   "result_text": "右中間適時三塁打",
+   "fielders": [
+    "RF"
+   ],
+   "inn": 5,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "3",
+   "runs": 1
+  },
+  {
+   "batter": "小田切 豪",
+   "type": "OUT",
+   "result_text": "三邪飛",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 5,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "山根 太陽",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 6,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "田内 望夢",
+   "type": "2B",
+   "result_text": "センターへのツーベースヒット",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 6,
+   "half": "top",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "runner": "田内 望夢",
+   "inn": 6,
+   "half": "top",
+   "outs": 1,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "三沢 隼",
+   "type": "K",
+   "result_text": "見逃し三振",
+   "inn": 6,
+   "half": "top",
+   "outs": 2,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "宮崎 礼治",
+   "type": "K",
+   "result_text": "見逃し三振",
+   "inn": 6,
+   "half": "top",
+   "outs": 3,
+   "bases": "3",
+   "runs": 0
+  },
+  {
+   "batter": "早川 幸汰",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "勝田 陵聖",
+   "type": "SH",
+   "result_text": "投犠打",
+   "fielders": [
+    "P"
+   ],
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "内間 叶琉",
+   "type": "1B",
+   "result_text": "左安打",
+   "fielders": [
+    "LF"
+   ],
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "13",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "runner": "内間 叶琉",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "23",
+   "runs": 0
+  },
+  {
+   "batter": "坂井 誠史郎",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "123",
+   "runs": 0
+  },
+  {
+   "batter": "控井 元幹",
+   "type": "FC",
+   "result_text": "二ゴロセーフ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 6,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "123",
+   "runs": 0
+  },
+  {
+   "batter": "高須 翔己",
+   "type": "FC",
+   "result_text": "三ゴロセーフ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 6,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "12",
+   "runs": 0
+  },
+  {
+   "batter": "後藤 大豪",
+   "type": "OUT",
+   "result_text": "一ゴロ",
+   "fielders": [
+    "1B"
+   ],
+   "inn": 7,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "成 真佑",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 7,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "岡本 琥之介",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 7,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "若村 駿希",
+   "type": "OUT",
+   "result_text": "二ゴロ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 7,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "納崎 塁斗",
+   "type": "1B",
+   "result_text": "右安打",
+   "fielders": [
+    "RF"
+   ],
+   "inn": 7,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "小田切 豪",
+   "type": "1B",
+   "result_text": "遊安打",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 7,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "12",
+   "runs": 0
+  },
+  {
+   "batter": "早川 幸汰",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "123",
+   "runs": 0
+  },
+  {
+   "batter": "勝田 陵聖",
+   "type": "OUT",
+   "result_text": "三ゴロ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 7,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "23",
+   "runs": 1
+  },
+  {
+   "batter": "内間 叶琉",
+   "type": "OUT",
+   "result_text": "三ゴロ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 7,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "23",
+   "runs": 0
+  },
+  {
+   "batter": "松井 大河",
+   "type": "OUT",
+   "result_text": "三ゴロ",
+   "fielders": [
+    "3B"
+   ],
+   "inn": 8,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "池田 陸",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 8,
+   "half": "top",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "山根 太陽",
+   "type": "BB",
+   "result_text": "フォアボール",
+   "inn": 8,
+   "half": "top",
+   "outs": 1,
+   "bases": "12",
+   "runs": 0
+  },
+  {
+   "batter": "田内 望夢",
+   "type": "1B",
+   "result_text": "センターへのタイムリーヒット",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 8,
+   "half": "top",
+   "outs": 1,
+   "bases": "12",
+   "runs": 1
+  },
+  {
+   "batter": "三沢 隼",
+   "type": "OUT",
+   "result_text": "中飛",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 8,
+   "half": "top",
+   "outs": 2,
+   "bases": "12",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "runner": "山根 太陽",
+   "inn": 8,
+   "half": "top",
+   "outs": 2,
+   "bases": "23",
+   "runs": 0
+  },
+  {
+   "batter": "宮崎 礼治",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 8,
+   "half": "top",
+   "outs": 3,
+   "bases": "23",
+   "runs": 0
+  },
+  {
+   "batter": "坂井 誠史郎",
+   "type": "K",
+   "result_text": "空振り三振",
+   "inn": 8,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "控井 元幹",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 8,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "高須 翔己",
+   "type": "OUT",
+   "result_text": "中直",
+   "fielders": [
+    "CF"
+   ],
+   "inn": 8,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "後藤 大豪",
+   "type": "OUT",
+   "result_text": "遊ゴロ",
+   "fielders": [
+    "SS"
+   ],
+   "inn": 9,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "成 真佑",
+   "type": "OUT",
+   "result_text": "二ゴロ",
+   "fielders": [
+    "2B"
+   ],
+   "inn": 9,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "岡本 琥之介",
+   "type": "1B",
+   "result_text": "内野安打",
+   "inn": 9,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "sub": {
+    "team": "away",
+    "player": "阿部 春人",
+    "role": "PH"
+   }
+  },
+  {
+   "batter": "阿部 春人",
+   "type": "OUT",
+   "result_text": "右飛",
+   "fielders": [
+    "RF"
+   ],
+   "inn": 9,
+   "half": "top",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0
+  }
+ ],
+ "final": {
+  "away": 1,
+  "home": 4
+ },
+ "players": {
+  "宮崎 礼治": {
+   "order": 4,
+   "number": 3
+  },
+  "三沢 隼": {
+   "order": 3,
+   "number": 5
+  },
+  "納崎 塁斗": {
+   "order": 3,
+   "number": 4
+  },
+  "内間 叶琉": {
+   "order": 7,
+   "number": 5
+  },
+  "若村 駿希": {
+   "order": 2,
+   "number": 8
+  },
+  "早川 幸汰": {
+   "order": 5,
+   "number": 3
+  },
+  "川島 連十": {
+   "order": null,
+   "number": 1
+  },
+  "池田 陸": {
+   "order": 9,
+   "number": 6
+  },
+  "後藤 大豪": {
+   "order": 5,
+   "number": 11
+  },
+  "田内 望夢": {
+   "order": 2,
+   "number": 4
+  },
+  "坂井 誠史郎": {
+   "order": 8,
+   "number": 6
+  },
+  "岡本 琥之介": {
+   "order": 7,
+   "number": 9
+  },
+  "控井 元幹": {
+   "order": 9,
+   "number": 2
+  },
+  "阿部 春人": {
+   "order": 8,
+   "number": 13
+  },
+  "藤本 優善": {
+   "order": null,
+   "number": 1
+  },
+  "高須 翔己": {
+   "order": 1,
+   "number": 9
+  },
+  "山根 太陽": {
+   "order": 1,
+   "number": 8
+  },
+  "勝田 陵聖": {
+   "order": 6,
+   "number": 7
+  },
+  "松井 大河": {
+   "order": 8,
+   "number": 7
+  },
+  "小田切 豪": {
+   "order": 4,
+   "number": 13
+  },
+  "成 真佑": {
+   "order": 6,
+   "number": 2
+  }
+ }
+}

@@ -1,0 +1,328 @@
+{
+ "games": [
+  {
+   "key": "2026-11-19-jingu-hs-1",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-19",
+   "start": "8:30",
+   "venue": "神宮球場",
+   "round": "1回戦",
+   "label": "高校の部 1回戦",
+   "src": "data/games/2026-11-19-jingu-hs-1.json",
+   "summary": "最大5点差からの大逆転劇だった。鹿児島城西は初回、鐘ケ江の3点適時三塁打と山口の2点適時三塁打で一気に5点を奪い、4回にも犠飛と失策で1点を加えて6-1と主導権を握った。仙台育英は2回に柴田の犠飛、5回に砂の適時二塁打と暴投で3点差まで詰め寄ると、8回裏、菊池のバント内野適時打を皮切りに小久保、砂の連続適時打で同点に。そして9回裏、先頭の有本が左越えへサヨナラ本塁打。5点のビハインドを跳ね返し、劇的な幕切れで初戦を突破した。",
+   "comment": "最大5点差をひっくり返し、9回裏に有本のサヨナラ本塁打。",
+   "x_url": null,
+   "cards": [
+    "jingu-hs-2026-g1-1-home.png",
+    "jingu-hs-2026-g1-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053034
+   },
+   "score": "仙台育英 7-6 鹿児島城西",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-19-jingu-hs-2",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-19",
+   "start": "11:00",
+   "venue": "神宮球場",
+   "round": "1回戦",
+   "label": "高校の部 1回戦",
+   "src": "data/games/2026-11-19-jingu-hs-2.json",
+   "summary": "追いつき、追い越し、また追いつかれるシーソーゲームを北海が制した。創志学園は4回、和田の適時打と内野ゴロの間に2点を先制。北海はその裏、前川の同点2ランで追いつき、高橋の押し出し四球、杉野の犠飛で2点を勝ち越した。創志学園も田中が5回に適時二塁打、7回に同点の適時三塁打と食らいつき、7回裏に水口の適時打で北海が前に出ても、8回表に和田の犠飛で再び同点。2度追いつかれた北海は8回裏、高橋が中堅へ2点適時三塁打を放ち、ようやく突き放した。",
+   "comment": "2度追いつかれながら、8回裏に高橋の2点三塁打で突き放した。",
+   "x_url": null,
+   "cards": [
+    "jingu-hs-2026-g2-1-home.png",
+    "jingu-hs-2026-g2-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053035
+   },
+   "score": "北海 7-5 創志学園",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-19-jingu-univ-1",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-19",
+   "start": "13:30",
+   "venue": "神宮球場",
+   "round": "1回戦",
+   "label": "大学の部 1回戦",
+   "src": "data/games/2026-11-19-jingu-univ-1.json",
+   "summary": "初回のビッグイニングが勝負を決めた。筑波大は1回、ダブルスチールで流れをつかむと、田代、森、村松、西口、宮澤と5本の適時打を連ね、打者11人で7点を奪った。中京大も黙ってはいない。1回裏に寺下の内野適時打で1点を返し、3回には寺下のソロと西谷の適時二塁打、4回にも鈴木の適時打で2点差まで詰め寄った。しかし4回から登板した筑波大の小林が6回を1失点で踏ん張り、反撃の芽を摘む。9回には中村の2点適時二塁打と西口の内野適時打でダメ押し。筑波大が打ち勝って初戦を突破した。",
+   "comment": "初回に打者11人で7点。4回から登板した小林が6回1失点で流れを渡さなかった。",
+   "x_url": "https://x.com/BaseBalltannin/status/2123381263390363846",
+   "cards": [
+    "jingu-univ-2026-g3-1-away.png",
+    "jingu-univ-2026-g3-2-home.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053043
+   },
+   "score": "筑波大 10-5 中京大",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-19-jingu-univ-2",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-19",
+   "start": "16:00",
+   "venue": "神宮球場",
+   "round": "1回戦",
+   "label": "大学の部 1回戦",
+   "src": "data/games/2026-11-19-jingu-univ-2.json",
+   "summary": "息の詰まる投手戦だった。両先発が一歩も譲らず、6回まで0-0。均衡が破れたのは7回、神戸医療未来大は岩本の二塁打と黒木の安打で好機をつくり、振り逃げで一死満塁とすると、岩城がフルカウントから押し出し四球を選んで先制、児嶋の適時打で2点目を挙げた。環太平洋大もその裏、代打を次々に送り二死二、三塁と一打同点の場面をつくったが、山田が後続を断つ。山田は最後までマウンドを譲らず、12奪三振の完封。わずか2点を守り切って初戦を突破した。",
+   "comment": "6回まで0-0。7回に押し出しと適時打で2点を挙げ、山田が12奪三振の完封。",
+   "x_url": "https://x.com/BaseBalltannin/status/2123382878658809881",
+   "cards": [
+    "jingu-univ-2026-g4-1-away.png",
+    "jingu-univ-2026-g4-2-home.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053044
+   },
+   "score": "神戸医療未来大 2-0 環太平洋大",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-20-jingu-hs-qf1",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-20",
+   "start": "8:30",
+   "venue": "神宮球場",
+   "round": "準々決勝",
+   "label": "高校の部 準々決勝",
+   "src": "data/games/2026-11-20-jingu-hs-qf1.json",
+   "summary": "二松学舎大付のエース川島が、明徳義塾打線を寄せつけなかった。1回裏、納崎の内野安打などで好機をつくり、小田切の適時三塁打と相手失策で2点を先制。5回には納崎が自ら右中間へ適時三塁打を放ち、7回には勝田の内野ゴロの間に加点した。川島は8回に田内の適時打で1点を失ったものの崩れることなく、9回を4安打9奪三振で完投。明徳義塾を退け、ベスト4に進んだ。",
+   "comment": "エース川島が9回4安打9奪三振の完投。小田切、納崎の三塁打で着実に加点した。",
+   "x_url": "https://x.com/BaseBalltannin/status/2123695080133533807",
+   "cards": [
+    "jingu-hs-2026-qf1-1-home.png",
+    "jingu-hs-2026-qf1-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053036
+   },
+   "score": "二松学舎大付 4-1 明徳義塾",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-20-jingu-hs-qf2",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-20",
+   "start": "11:00",
+   "venue": "神宮球場",
+   "round": "準々決勝",
+   "label": "高校の部 準々決勝",
+   "src": "data/games/2026-11-20-jingu-hs-qf2.json",
+   "summary": "常葉大菊川が序盤に主導権を握り、継投で逃げ切った。1回裏、小柳の適時三塁打と山崎の犠飛で2点を先制。2回に星の適時三塁打で1点差に迫られたが、5回に大石の適時二塁打で再びリードを広げた。先発の福田は7回途中まで9奪三振で1失点と好投し、後を継いだ近藤も無失点でつなぐ。8回には堀内陽登の適時打でダメ押しし、19年ぶりに神宮で白星を挙げた。",
+   "comment": "先制、中押し、ダメ押し。福田と近藤の継投で、19年ぶりに神宮で白星。",
+   "x_url": "https://x.com/BaseBalltannin/status/2123695123041255627",
+   "cards": [
+    "jingu-hs-2026-qf2-1-home.png",
+    "jingu-hs-2026-qf2-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053037
+   },
+   "score": "常葉大菊川 4-1 帝京長岡",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-20-jingu-univ-1",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-20",
+   "start": "13:30",
+   "venue": "神宮球場",
+   "round": "1回戦",
+   "label": "大学の部 1回戦",
+   "src": "data/games/2026-11-20-jingu-univ-1.json",
+   "summary": "点の取り合いとなった打撃戦を九州共立大が制した。1回に吉川の犠飛で先制し、3回には宮崎の適時三塁打と吉川の2ランで4-0。日本体育大は3回に川口のソロで反撃を始めると、4回には藤巻の適時打に続いて川口が同点の2点適時打を放った。川口はこの日4打数4安打と気を吐いた。それでも九州共立大は7回、宮崎の内野ゴロの間に勝ち越し、吉川の2点二塁打と麻上の2点適時打で一気に5点差。8回には宮崎のソロも飛び出した。日体大は7回と9回に計3点を返したが届かず。吉川は5打点の大暴れだった。",
+   "comment": "吉川が2ランを含む5打点の大暴れ。日体大・川口の4安打の追い上げも届かず。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124108188253565062",
+   "cards": [
+    "jingu-univ-2026-g5-1-away.png",
+    "jingu-univ-2026-g5-2-home.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053045
+   },
+   "score": "九州共立大 10-7 日本体育大",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-20-jingu-univ-2",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-20",
+   "start": "16:00",
+   "venue": "神宮球場",
+   "round": "2回戦",
+   "label": "大学の部 2回戦",
+   "src": "data/games/2026-11-20-jingu-univ-2.json",
+   "summary": "大阪商業大の一発攻勢が止まらなかった。2回に山口の先制3ランで口火を切ると、4回には伊吹の2ランと志良堂のソロ、5回には春山の2ランと、4本塁打で8点を奪った。東農大オホーツクも6回、渡邊の適時打と野本の3ランで4点を返して意地を見せたが、大阪商業大は8回に赤埴の犠飛と権田の適時打で再び突き放す。9回に2点を失ったものの、先発の中山が17奪三振で完投した。",
+   "comment": "4本塁打で8点を奪い、先発の中山が17奪三振で完投。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124108213880869302",
+   "cards": [
+    "jingu-univ-2026-g6-1-home.png",
+    "jingu-univ-2026-g6-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053046
+   },
+   "score": "大阪商業大 10-6 東農大オホーツク",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-21-jingu-hs-qf3",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-21",
+   "start": "8:30",
+   "venue": "神宮球場",
+   "round": "準々決勝",
+   "label": "高校の部 準々決勝",
+   "src": "data/games/2026-11-21-jingu-hs-qf3.json",
+   "summary": "8-7。まさに手に汗にぎるルーズヴェルトゲームだった。仙台育英は3回、齋藤の押し出し四球と朝倉の2点適時打で先制し、4回に丹羽の犠飛、5回に朝倉のソロで5-2。主導権は完全に仙台育英にあった。ところが5回裏、二死から脇山、舩山の連続適時打で1点差に迫ると、安食が右前へ2点適時打を放ち、横浜が一気に逆転。それでも仙台育英は8回表、小久保の同点ソロと丹羽の勝ち越し打で再びリードを奪う。土俵際の横浜はその裏、一死満塁で阿部がフルカウントから中前へ同点打。そして9回裏、振り逃げの間に捕手の悪送球で走者が生還し、サヨナラ。逆転、再逆転、同点、そしてサヨナラ。最後の一球まで行方のわからない一戦を横浜が制した。",
+   "comment": "逆転、再逆転、同点の末、9回裏に振り逃げと悪送球でサヨナラ。手に汗にぎるルーズヴェルトゲーム。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124115619406901347",
+   "cards": [
+    "jingu-hs-2026-qf3-1-home.png",
+    "jingu-hs-2026-qf3-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053038
+   },
+   "score": "横浜 8-7 仙台育英",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-21-jingu-hs-qf4",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-21",
+   "start": "11:00",
+   "venue": "神宮球場",
+   "round": "準々決勝",
+   "label": "高校の部 準々決勝",
+   "src": "data/games/2026-11-21-jingu-hs-qf4.json",
+   "summary": "北海が先手を取り、京都国際がひっくり返した。北海は1回、渡部の適時打で先制。京都国際は4回まで得点を奪えずにいたが、5回、二死満塁で川北がフルカウントから中堅へ走者一掃の逆転二塁打を放ち、野沢の適時打も続いて一挙4点。6回に白田の適時打で2点差とされても、その裏すぐに堀内の適時打で突き放した。投げては末永、越沼の継投で北海を2点に封じ、神宮大会で初の白星を挙げた。",
+   "comment": "5回二死満塁、川北の走者一掃の逆転二塁打で一挙4点。継投で逃げ切り、神宮大会初白星。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124115357384552504",
+   "cards": [
+    "jingu-hs-2026-qf4-1-home.png",
+    "jingu-hs-2026-qf4-2-away.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053039
+   },
+   "score": "京都国際 5-2 北海",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-21-jingu-univ-1",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-21",
+   "start": "13:30",
+   "venue": "神宮球場",
+   "round": "2回戦",
+   "label": "大学の部 2回戦",
+   "src": "data/games/2026-11-21-jingu-univ-1.json",
+   "summary": "緊迫の投手戦を、筑波大がわずかな好機で制した。両先発が譲らず、6回まで0-0。均衡を破ったのは7回、筑波大は代打金子の安打などで一死一、三塁とし、西口の中前適時打で先制。さらに満塁から押し出し死球で2点目を挙げた。明治大は8回、無死三塁から榊原の適時打で1点差に迫ったが、筑波大は友廣、小林の継投で反撃をしのいで逃げ切った。敗れた明治大の平嶋は6回無失点、9奪三振の好投。勝敗を分けたのは、終盤のわずかなほころびだった。",
+   "comment": "6回まで0-0の投手戦。7回に西口の先制打と押し出し死球で2点を奪い、継投で逃げ切った。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124115365181731219",
+   "cards": [
+    "jingu-univ-2026-g7-1-away.png",
+    "jingu-univ-2026-g7-2-home.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053047
+   },
+   "score": "筑波大 2-1 明治大",
+   "post_status": "posted",
+   "grades_done": false
+  },
+  {
+   "key": "2026-11-21-jingu-univ-2",
+   "comp": "jingu-2026",
+   "div": "UNIV",
+   "date": "2026-11-21",
+   "start": "16:00",
+   "venue": "神宮球場",
+   "round": "2回戦（5回コールド）",
+   "label": "大学の部 2回戦（5回コールド）",
+   "src": "data/games/2026-11-21-jingu-univ-2.json",
+   "summary": "仙台大の打線が爆発した。1回に瀬川の適時打で2点を先制し、2回には相手捕手の悪送球で1点を追加。4回には内山の適時打を皮切りに、齋藤の2ラン、瀬川のソロ、新保の2ランと3本塁打を重ねて一挙6点を奪った。5回には新保がこの日2本目となる満塁本塁打を放って13-1。15安打の猛攻で5回コールド勝ちを収めた。先発の大城は4回を1失点にまとめた。",
+   "comment": "4回に3本塁打で一挙6点、5回には新保の満塁弾。15安打の猛攻で5回コールド。",
+   "x_url": "https://x.com/BaseBalltannin/status/2124115372798624162",
+   "cards": [
+    "jingu-univ-2026-g8-1-away.png",
+    "jingu-univ-2026-g8-2-home.png"
+   ],
+   "status": "published",
+   "source": {
+    "site": "sportsnavi",
+    "league": "bb_univ_jingu",
+    "id": 2021053048
+   },
+   "score": "仙台大 13-1 神戸医療未来大",
+   "post_status": "posted",
+   "grades_done": false
+  }
+ ]
+}

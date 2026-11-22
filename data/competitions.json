@@ -1,0 +1,38 @@
+{
+ "jingu-2026": {
+  "name": "明治神宮大会 2026",
+  "short": "神宮大会",
+  "formal": "明治神宮外苑創建百年記念 第57回明治神宮野球大会",
+  "start": "2026-11-19",
+  "end": "2026-11-24",
+  "buffer_days": 3,
+  "venue": "神宮球場",
+  "page": "tournaments/jingu-2026.html",
+  "slug": "jingu",
+  "hashtags": [
+   "#神宮大会"
+  ],
+  "divisions": [
+   {
+    "div": "HS",
+    "slot": "hs",
+    "source": {
+     "site": "sportsnavi",
+     "league": "hsb_jingu",
+     "id_from": 2021053034,
+     "id_to": 2021053042
+    }
+   },
+   {
+    "div": "UNIV",
+    "slot": "univ",
+    "source": {
+     "site": "sportsnavi",
+     "league": "bb_univ_jingu",
+     "id_from": 2021053043,
+     "id_to": 2021053053
+    }
+   }
+  ]
+ }
+}

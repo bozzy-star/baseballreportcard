@@ -1,0 +1,110 @@
+name: 毎日の更新（取得・採点・サイト）
+
+on:
+  schedule:
+    - cron: "30 5 * * *"   # 14:30 JST 高校の部
+    - cron: "0 8 * * *"    # 17:00 JST 高校の部（遅れた試合の再確認）
+    - cron: "0 11 * * *"   # 20:00 JST 大学の部
+    - cron: "0 13 * * *"   # 22:00 JST 大学の部（遅れた試合の再確認）
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "対象（hs / univ / all）"
+        default: "all"
+      date:
+        description: "処理する日（空なら今日）"
+        default: ""
+  push:
+    branches: [run]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: write
+
+concurrency:
+  group: brc-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 準備（画像用フォントとライブラリ）
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra > /dev/null
+          pip install -q pillow
+
+      - name: 対象を決める
+        id: slot
+        run: |
+          case "${{ github.event.schedule }}" in
+            "30 5 * * *") echo "slot=hs" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
+            "0 8 * * *")  echo "slot=hs" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
+            "0 11 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
+            "0 13 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
+            *) echo "slot=${{ github.event.inputs.slot || 'all' }}" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: 試合の取得と採点
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          DATE="${{ github.event.inputs.date }}"
+          python pipeline/run.py --slot ${{ steps.slot.outputs.slot }} ${{ steps.slot.outputs.late }} ${DATE:+--date $DATE} --out /tmp/brc-run.json
+          cat /tmp/brc-run.json
+
+      - name: サイトを作る
+        run: python pipeline/web/site.py _site
+
+      - name: X投稿の確認用 Issue を作る
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python pipeline/post_pending.py draft --out /tmp/issue.md
+          if [ -f /tmp/issue.md ]; then
+            gh label create x-approval --color D7262E --description "X投稿の確認" --force
+            gh issue create --title "X投稿の確認 $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" --body-file /tmp/issue.md --label x-approval
+          fi
+
+      - name: 終わっていない試合を知らせる
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY' > /tmp/unfinished.md
+          import json
+          r = json.load(open("/tmp/brc-run.json"))
+          if r["unfinished"]:
+              print("次の試合が、この時刻までに終わっていませんでした。翌日の実行で改めて確認します。\n")
+              print("\n".join(f"- {u}" for u in r["unfinished"]))
+          PY
+          if [ -s /tmp/unfinished.md ]; then
+            gh issue create --title "終わっていない試合があります $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" --body-file /tmp/unfinished.md
+          fi
+
+      - name: データを保存
+        run: |
+          git config user.name "brc-bot"
+          git config user.email "brc-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || (git commit -m "自動更新 $(date -u -d '+9 hours' +%Y-%m-%d\ %H:%M)" && git push origin HEAD:main)
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
