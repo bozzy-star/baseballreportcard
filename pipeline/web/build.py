@@ -368,7 +368,7 @@ def footer(mobile):
     return f"""  <footer style="background-color: #081327; border-top: 4px solid #D7262E">
     <div style="max-width: 1120px; margin: 0 auto; padding: {'28px 16px 40px' if mobile else '36px 24px 48px'}; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #9FB3D6">
       <span style="font-size: 17px; font-weight: 900; color: #FFFFFF">ベースボール<span style="border-bottom: 3px solid #D7262E">通信簿</span></span>
-      <span>運営：1000%</span>
+      <span>運営：1000%　<a href="{U('privacy')}" style="color: #C9D6EA">プライバシーポリシー</a></span>
       <span>勝利確率と採点は、簡易モデルによる試算です。選手の評価・実力を決めるものではありません。</span>
       <span>© 2026 1000%</span>
     </div>

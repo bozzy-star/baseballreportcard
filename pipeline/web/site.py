@@ -13,13 +13,19 @@ REG = json.loads((ROOT / "data" / "registry.json").read_text(encoding="utf-8"))[
 COMPS = json.loads((ROOT / "data" / "competitions.json").read_text(encoding="utf-8"))
 PUB = [g for g in REG if g.get("status") in ("published", "processed")]
 X_PROFILE = "https://x.com/BaseBalltannin"
+SITECFG = json.loads((ROOT / "data" / "site.json").read_text(encoding="utf-8")) if (ROOT / "data" / "site.json").exists() else {}
+GTM = (SITECFG.get("gtm_id") or "").strip()
+GTM_HEAD = (f"""<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}})(window,document,'script','dataLayer','{GTM}');</script>
+""" if GTM else "")
+GTM_BODY = (f"""<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+""" if GTM else "")
 
 
 def urls(depth, extra=None):
     p = "../" * depth
     comp = COMPS[(extra or {}).pop("_comp", None) or (PUB[-1]["comp"] if PUB else next(iter(COMPS)))]
     u = {"top": p + "index.html", "tournament": p + comp["page"], "archive": p + comp["page"] + "#archive",
-         "rules": p + "scoring.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
+         "rules": p + "scoring.html", "privacy": p + "privacy.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
          "img_hero": p + "assets/hero-stadium.jpg"}
     for g in PUB:
         u["game:" + g["key"]] = p + f"games/{g['key']}.html"
@@ -50,7 +56,7 @@ def merge(pc, sp, out, title, desc):
     html = f"""<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
+{GTM_HEAD}<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
@@ -67,7 +73,7 @@ summary::-webkit-details-marker{{display:none}}
 </style>
 </head>
 <body>
-<div class="v-pc">{a}</div>
+{GTM_BODY}<div class="v-pc">{a}</div>
 <div class="v-sp">{b}</div>
 </body>
 </html>
@@ -107,6 +113,9 @@ for cid, c in COMPS.items():
     run("top.py", ["tourney", cid], depth, {"_comp": cid})
     merge("Tourney.dc.html", "TourneyMobile.dc.html", SITE / c["page"], f"{c['name']}｜ベースボール通信簿",
           f"{c['name']}の全試合を、日付ごとに。全選手を10点満点で採点した通信簿の一覧です。")
+run("privacy.py", [], 0)
+merge("Privacy.dc.html", "PrivacyMobile.dc.html", SITE / "privacy.html", "プライバシーポリシー｜ベースボール通信簿",
+      "ベースボール通信簿のプライバシーポリシー（アクセス解析と外部への情報送信について）。")
 run("top.py", [], 0)
 merge("Top.dc.html", "TopMobile.dc.html", SITE / "index.html", "ベースボール通信簿｜全試合、全選手の活躍を採点！",
       "野球の全試合・全選手を10点満点で採点する「通信簿」。打った・抑えただけでなく、その場面がどれだけ勝敗を動かしたかで点をつけます。")
