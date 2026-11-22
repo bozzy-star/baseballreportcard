@@ -270,7 +270,8 @@ def tourney_page(m):
     return f"""<div style="min-height: 100vh; background-color: #0B1A36; background-image: radial-gradient(circle at 50% 0, #1A3260 0, #0B1A36 60%); color: #FFFFFF; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6">
 {B.header(m)}  <main style="max-width: 1120px; margin: 0 auto; padding: {'18px 16px 56px' if m else '24px 24px 72px'}; display: flex; flex-direction: column; gap: {gap}px">
     <div style="display: flex; flex-direction: column; gap: 14px"><nav aria-label="パンくずリスト" style="font-size: 13px">{crumbs}</nav>{hero}</div>
-    <section aria-label="部ごとの状況" style="display: flex; flex-direction: column; gap: 36px">{h2('大会の状況', m)}{divs}{note}</section>
+    <section aria-label="部ごとの状況" style="display: flex; flex-direction: column; gap: 36px">{h2('大会の状況', m)}{divs}{note}
+      <a href="{U('players')}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background-color: {RED}; color: #FFFFFF; text-decoration: none; font-weight: 900; font-size: {16 if m else 18}px">選手一覧（大学の部・高校の部）を見る →</a></section>
     <section id="archive" aria-label="日付ごとの試合" style="display: flex; flex-direction: column; gap: 28px">{h2('日付ごとの試合', m)}{days}</section>
     <a href="{U('rules')}" style="align-self: flex-start; font-size: 14px; font-weight: 700; color: #F3B7BA">採点のしくみ →</a>
   </main>

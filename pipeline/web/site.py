@@ -30,7 +30,7 @@ def urls(depth, extra=None):
     p = "../" * depth
     comp = COMPS[(extra or {}).pop("_comp", None) or (PUB[-1]["comp"] if PUB else next(iter(COMPS)))]
     u = {"top": p + "index.html", "tournament": p + comp["page"], "archive": p + comp["page"] + "#archive",
-         "rules": p + "scoring.html", "players": p + "players/index.html", "privacy": p + "privacy.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
+         "rules": p + "scoring.html", "players": p + comp["page"][:-5] + "/players/index.html", "privacy": p + "privacy.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
          "img_hero": p + "assets/hero-stadium.jpg"}
     for g in PUB:
         u["game:" + g["key"]] = p + f"games/{g['key']}.html"
@@ -118,11 +118,20 @@ for cid, c in COMPS.items():
     run("top.py", ["tourney", cid], depth, {"_comp": cid})
     merge("Tourney.dc.html", "TourneyMobile.dc.html", SITE / c["page"], f"{c['name']}｜ベースボール通信簿",
           f"{c['name']}の全試合を、日付ごとに。全選手を10点満点で採点した通信簿の一覧です。")
-run("players.py", [], 1)
+run("players.py", ["players"], 1)
 for m in json.loads((TMP / "players" / "manifest.json").read_text(encoding="utf-8")):
     merge(f"players/{m['pid']}.pc.dc.html", f"players/{m['pid']}.sp.dc.html", SITE / "players" / f"{m['pid']}.html", m["title"], m["desc"])
-merge("players/index.pc.dc.html", "players/index.sp.dc.html", SITE / "players" / "index.html", "選手一覧｜ベースボール通信簿",
-      "ベースボール通信簿で採点した全選手の一覧。名前から試合ごとの通信簿へ。")
+for cid, c in COMPS.items():
+    if not any(g["comp"] == cid for g in PUB):
+        continue
+    run("players.py", ["comp", cid], 3, {"_comp": cid})
+    cdir = SITE / c["page"][:-5] / "players"
+    merge(f"comp-{cid}/index.pc.dc.html", f"comp-{cid}/index.sp.dc.html", cdir / "index.html", f"選手一覧｜{c['name']}｜ベースボール通信簿",
+          f"{c['name']}の選手一覧。大会通算の採点で、大学・高校の野手と投手のランキングを掲載。")
+    for dv, ja in (("univ", "大学の部"), ("hs", "高校の部")):
+        if (TMP / f"comp-{cid}" / f"{dv}.pc.dc.html").exists():
+            merge(f"comp-{cid}/{dv}.pc.dc.html", f"comp-{cid}/{dv}.sp.dc.html", cdir / f"{dv}.html", f"{ja}の選手一覧｜{c['name']}｜ベースボール通信簿",
+                  f"{c['name']} {ja}の全選手の採点を、チームごとに試合順で一覧にしました。")
 run("privacy.py", [], 0)
 merge("Privacy.dc.html", "PrivacyMobile.dc.html", SITE / "privacy.html", "プライバシーポリシー｜ベースボール通信簿",
       "ベースボール通信簿のプライバシーポリシー（アクセス解析と外部への情報送信について）。")
