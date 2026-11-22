@@ -102,6 +102,31 @@ def h1(text, mobile, small=""):
             + (f'<span style="font-size: {15 if mobile else 18}px; font-weight: 700; color: #C9D6EA; margin-left: 10px">{esc(small)}</span>' if small else "") + "</h1>")
 
 
+# ---------- バッジ ----------
+
+def award_shelf(p, mobile):
+    """獲ったMVP・敢闘賞の数だけバッジを並べる（試合の日付つき）。"""
+    if not p["awards"]:
+        return ""
+    items = []
+    for q in sorted([q for q in p["games"] if q["award"]], key=lambda q: q["date"]):
+        items.append(f'<a href="{R(q["page"])}" title="{q["award"]}（{D.md_ja(q["date"])} 対{esc(q["opp"])}）" style="display: flex; flex-direction: column; align-items: center; gap: 2px; text-decoration: none">'
+                     f'{B.badge(q["award"], 52 if mobile else 64)}<span style="font-size: 11px; font-weight: 900; color: #FFD23F; white-space: nowrap">{q["award"]}</span>'
+                     f'<span style="font-size: 10px; color: #9FB3D6; white-space: nowrap">{int(q["date"][5:7])}/{int(q["date"][8:10])} 対{esc(q["opp"])}</span></a>')
+    cnt = {}
+    for a in p["awards"]:
+        k = "MVP" if "MVP" in a else a
+        cnt[k] = cnt.get(k, 0) + 1
+    total = "・".join(f"{k} ×{v}" for k, v in cnt.items())
+    return (f'<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px"><span style="font-size: 13px; font-weight: 900; color: #F3B7BA">獲得バッジ　{total}</span>'
+            f'<div style="display: flex; flex-wrap: wrap; gap: 14px">{"".join(items)}</div></div>')
+
+
+def mini_badges(p, size=16):
+    """名前の横に、獲ったバッジを小さく数だけ並べる。"""
+    return "".join(B.badge(a, size) for a in p["awards"])
+
+
 # ---------- 選手 ----------
 
 def player_page(comp, p, mobile):
@@ -110,7 +135,7 @@ def player_page(comp, p, mobile):
     stats = [("出場", f'{len(p["games"])}<span style="font-size: 14px">試合</span>'), ("大会通算", f'{p["total"]:+.1f}'), ("最高", f'{p["best"]:.1f}')]
     stat_html = "".join(f'<div style="flex: 1; min-width: 90px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700; color: {SUB}">{k}</span>'
                         f'<span class="hand" style="font-size: {34 if mobile else 40}px; color: {RED}; line-height: 1.1">{v}</span></div>' for k, v in stats)
-    awards = "".join(f'<span style="display: inline-flex; align-items: center; gap: 4px">{B.badge(a, 30)}{chip(a)}</span>' for a in p["awards"])
+    awards = award_shelf(p, mobile)
     rows = ""
     for q in p["games"]:
         head = f'{D.md_ja(q["date"])}　{q["comp"]} {q["div"]} {q["round"]}'
@@ -128,7 +153,7 @@ def player_page(comp, p, mobile):
     body = f"""<div style="display: flex; flex-direction: column; gap: 6px">
       {h1(p['name'], mobile, 'の通信簿')}
       <span style="font-size: {15 if mobile else 17}px; font-weight: 700; color: #C9D6EA">{esc(sub)}</span>
-      {f'<span style="display: flex; flex-wrap: wrap; gap: 6px">{awards}</span>' if awards else ''}
+      {awards}
     </div>
     <div class="sheet" style="padding: {'14px 16px' if mobile else '18px 24px'}; border-radius: 8px; color: {INK}; display: flex; flex-wrap: wrap; gap: 12px; border-top: 6px solid {RED}">{stat_html}
       <span style="flex: 1 1 100%; font-size: 12px; color: {SUB}">大会通算＝各試合の点数から及第点6.0を引いた合計（上限突破分も含む）。プラスが大きいほど勝利に貢献しています。</span></div>
@@ -149,7 +174,7 @@ def rank_table(lst, mobile):
         team = esc(p["team"]) + (f'<span style="color: {SUB}">（{esc(p["grade"])}）</span>' if p["grade"] else "")
         rows += f"""<tr>
           <td style="text-align: center"><span class="hand" style="font-size: 24px; color: {RED}; line-height: 1">{i + 1}</span></td>
-          <td><a href="{R(p['page'])}" style="font-weight: 900; font-size: 16px; color: {INK}; white-space: nowrap">{esc(p['name'])}</a>
+          <td><a href="{R(p['page'])}" style="font-weight: 900; font-size: 16px; color: {INK}; white-space: nowrap">{esc(p['name'])}</a> <span style="white-space: nowrap">{mini_badges(p, 18)}</span>
             {f'<span style="display: block; font-size: 12px">{team}・{esc(p["pos"])}　{sc}</span>' if mobile else ''}</td>
           {'' if mobile else f'<td style="white-space: nowrap">{team}</td><td style="text-align: center; white-space: nowrap">{esc(p["pos"])}</td>'}
           {'' if mobile else f'<td style="font-size: 13px; color: {SUB}; white-space: nowrap">{sc}</td>'}
@@ -263,7 +288,7 @@ def team_page(comp, ps, div, team, mobile):
                         f'<span style="display: block; font-size: 10px; color: {SUB}">{esc(meta)}</span></td>{cells}<td style="text-align: right; white-space: nowrap; padding-left: 2px; padding-right: 2px">{tot}</td></tr>')
             else:
                 gr = f'<span style="font-size: 11px; color: {SUB}; margin-left: 4px">{esc(p["grade"])}</span>' if p["grade"] else ""
-                out += (f'<tr><td style="white-space: nowrap"><a href="{R(p["page"])}" style="font-weight: 900; color: {INK}">{esc(p["name"])}</a>{gr}</td>'
+                out += (f'<tr><td style="white-space: nowrap"><a href="{R(p["page"])}" style="font-weight: 900; color: {INK}">{esc(p["name"])}</a>{gr} <span style="white-space: nowrap">{mini_badges(p, 16)}</span></td>'
                         f'<td style="text-align: center; color: {SUB}; white-space: nowrap">{esc(p["pos"])}</td>{cells}<td style="text-align: right; white-space: nowrap">{tot}</td></tr>')
         return out
     key = lambda p: (-round(p["total"], 2), -p["wpa"])  # noqa: E731
