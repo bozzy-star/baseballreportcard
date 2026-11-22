@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: "30 5 * * *"   # 14:30 JST 高校の部
     - cron: "0 8 * * *"    # 17:00 JST 高校の部（遅れた試合の再確認）
+    - cron: "0 7 * * *"    # 16:00 JST 大学の部（昼の試合の日）
+    - cron: "30 9 * * *"   # 18:30 JST 大学の部（昼の試合の再確認）
     - cron: "0 11 * * *"   # 20:00 JST 大学の部
     - cron: "0 13 * * *"   # 22:00 JST 大学の部（遅れた試合の再確認）
   workflow_dispatch:
@@ -58,6 +60,8 @@ jobs:
           case "${{ github.event.schedule }}" in
             "30 5 * * *") echo "slot=hs" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
             "0 8 * * *")  echo "slot=hs" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
+            "0 7 * * *")  echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
+            "30 9 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
             "0 11 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
             "0 13 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
             *) echo "slot=${{ github.event.inputs.slot || 'all' }}" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
