@@ -99,22 +99,23 @@ def inner_text(node):
     """ブラウザの innerText に近い文章（行ごと、空行なし）。"""
     out = []
 
-    def walk(n):
+    def walk(n, in_cell=False):
         if isinstance(n, str):
             out.append(re.sub(r"[ \t\r\n]+", " ", n))
             return
         if n.tag in SKIP:
             return
         if n.tag == "br":
-            out.append("\n")
+            out.append(" " if in_cell else "\n")
             return
-        blk = n.tag in BLOCK
+        blk = n.tag in BLOCK and not in_cell  # 表のマスの中の段落は改行しない（空の回の <p></p> など）
         if blk:
             out.append("\n")
-        if n.tag in ("td", "th"):
+        cell = n.tag in ("td", "th")
+        if cell:
             out.append("\t")
         for c in n.children:
-            walk(c)
+            walk(c, in_cell or cell)
         if blk:
             out.append("\n")
 

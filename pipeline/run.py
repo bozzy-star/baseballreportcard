@@ -57,6 +57,8 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
     if data.get("warnings"):
         log.append(f"  注意（{key}）: " + " / ".join(data["warnings"][:5]))
     (DATA / "games").mkdir(exist_ok=True)
+    (DATA / "raw").mkdir(exist_ok=True)
+    (DATA / "raw" / f"{key}.txt").write_text(text, encoding="utf-8")
     (DATA / "games" / f"{key}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     game = Game(data)
     r = game.run()
