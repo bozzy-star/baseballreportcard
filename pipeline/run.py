@@ -16,7 +16,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "pipeline"))
 from brc.engine import Game  # noqa: E402
 from brc.parse_yahoo import YahooParser  # noqa: E402
-from brc.card import make_cards  # noqa: E402
+from brc.card import make_cards, player_cards  # noqa: E402
 import fetch_sportsnavi as SN  # noqa: E402
 import textgen  # noqa: E402
 
@@ -78,6 +78,11 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
     cmeta = {"event_name": f"{comp['formal']} {DIV_JA[div]}", "short_name": comp["short"], "start": meta.get("time"), "end": meta.get("end")}
     (DATA / "cards").mkdir(exist_ok=True)
     paths = make_cards(r, DATA / "cards", texts.get("card_summary"), cmeta)
+    try:
+        ppaths = player_cards(r, DATA / "cards", cmeta, players)
+    except Exception as e:  # 選手カードが作れなくても試合の処理は続ける
+        log.append(f"  注意（{key}）: 選手カードを作れませんでした: {e}")
+        ppaths = []
     url = f"{SITE_URL}/games/{key}.html"
     entry = dict(key=key, comp=comp_id, div=div, date=sg["date"], start=meta.get("time") or "", end=meta.get("end"),
                  venue=meta.get("venue") or comp.get("venue", ""), round=rnd + (f"（{innings}回コールド）" if innings < 9 else ""),
@@ -85,6 +90,7 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
                  summary=texts.get("summary", ""), card_summary=texts.get("card_summary", ""), comment=texts.get("comment", ""),
                  post_text=textgen.post_text(comp, label, score_line(r), texts.get("post_lead", ""), r, url),
                  text_by=texts.get("generated_by"), x_url=None, cards=[pathlib.Path(p).name for p in paths],
+                 player_cards=[pathlib.Path(p).name for p in ppaths],
                  status="published", post_status="pending",
                  source={"site": "sportsnavi", "league": league, "id": sg["id"]},
                  processed_at=dt.datetime.now(JST).isoformat(timespec="minutes"))

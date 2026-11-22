@@ -126,6 +126,14 @@ def nm(s):
     return s.replace(" ", "")
 
 
+def plink(x):
+    from brc.ids import player_id
+    base = URLS.get("players_dir")
+    if not base:
+        return nm(x["player"])
+    return f'<a href="{base}{player_id(x["team"], x["player"])}.html" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
+
+
 def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;")
 
@@ -344,11 +352,12 @@ def header(mobile):
     logo = 44 if mobile else 52
     nav = (f'<details style="position: relative"><summary aria-label="メニューを開く" style="list-style: none; width: 44px; height: 44px; border-radius: 10px; border: 2px solid #3D5C93; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>'
            f'<nav aria-label="メインメニュー" style="position: absolute; right: 0; top: 52px; z-index: 20; display: flex; flex-direction: column; min-width: 200px; background-color: #0B1A36; border: 2px solid #3D5C93; border-radius: 10px; padding: 6px">'
-           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournament"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
+           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournament"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
            + '<a href="https://x.com/BaseBalltannin" style="padding: 12px 14px; color: #F3B7BA; text-decoration: none; font-weight: 900">Xでフォロー</a></nav></details>'
            if mobile else
            '<nav aria-label="メインメニュー" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px">'
            f'<a href="{U("tournament")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">大会</a>'
+           f'<a href="{U("players")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">選手</a>'
            f'<a href="{U("archive")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">日付</a>'
            f'<a href="{U("rules")}" style="padding: 10px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px">採点のしくみ</a>'
            '<a href="https://x.com/BaseBalltannin" style="padding: 10px 20px; background-color: #D7262E; color: #FFFFFF; text-decoration: none; font-weight: 900; font-size: 15px; border-radius: 999px">Xでフォロー</a></nav>')
@@ -533,7 +542,7 @@ def team_table(side, mobile):
             return f"""<div style="{hl}display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 9px 2px; border-bottom: 1px solid {LINE}">
                 <span style="flex: none; width: 52px; display: flex; flex-direction: column; align-items: center"><span class="hand" style="font-size: 32px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="font-size: 9px; font-weight: 900; color: {RED}; white-space: nowrap">突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</span>
                 <span style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1px">
-                  <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px"><span style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{nm(x['player'])}{mark(x)}</span><span style="font-size: 12px; font-weight: 900; color: {wc}; white-space: nowrap; font-variant-numeric: tabular-nums">{x['wpa'] * 100:+.0f}%</span></span>
+                  <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px"><span style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{plink(x)}{mark(x)}</span><span style="font-size: 12px; font-weight: 900; color: {wc}; white-space: nowrap; font-variant-numeric: tabular-nums">{x['wpa'] * 100:+.0f}%</span></span>
                   <span style="font-size: 12px; color: {SUB}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{order}{pos}　{x['stat']}</span>
                 </span>
                 <span class="cm" style="flex: 1 1 100%; font-size: 12px; line-height: 1.55; letter-spacing: -0.01em">{cm}</span>
@@ -557,7 +566,7 @@ def team_table(side, mobile):
                 <td style="color: {SUB}; text-align: center">{order}</td>
                 <td style="white-space: nowrap">{pos_chain(x)}</td>
                 {f'<td style="color: {SUB}">{x.get("number") or ""}</td>' if HAS_NUM else ''}
-                <td><span style="display: block; font-weight: 900; font-size: 16px; white-space: nowrap">{nm(x['player'])}{mark(x)}</span><span style="display: block; font-size: 12px; color: {SUB}; max-width: 15em; line-height: 1.5">{x['stat']}</span></td>
+                <td><span style="display: block; font-weight: 900; font-size: 16px; white-space: nowrap">{plink(x)}{mark(x)}</span><span style="display: block; font-size: 12px; color: {SUB}; max-width: 15em; line-height: 1.5">{x['stat']}</span></td>
                 <td style="white-space: nowrap">{bar(x['wpa'], 40)}</td>
                 <td style="text-align: center; white-space: nowrap"><span class="hand" style="font-size: 30px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</td>
                 <td style="width: 100%"><div class="cm" style="font-size: 13px; line-height: 1.6; min-width: 44em">{esc(x['comment'])}</div></td>

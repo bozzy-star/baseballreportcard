@@ -30,7 +30,7 @@ def urls(depth, extra=None):
     p = "../" * depth
     comp = COMPS[(extra or {}).pop("_comp", None) or (PUB[-1]["comp"] if PUB else next(iter(COMPS)))]
     u = {"top": p + "index.html", "tournament": p + comp["page"], "archive": p + comp["page"] + "#archive",
-         "rules": p + "scoring.html", "privacy": p + "privacy.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
+         "rules": p + "scoring.html", "players": p + "players/index.html", "privacy": p + "privacy.html", "img_batter": p + "assets/batter-navy.png", "img_pitcher": p + "assets/pitcher-navy.png",
          "img_hero": p + "assets/hero-stadium.jpg"}
     for g in PUB:
         u["game:" + g["key"]] = p + f"games/{g['key']}.html"
@@ -98,7 +98,7 @@ for g in PUB:
     for c in cards:
         if (ROOT / "data" / "cards" / c).exists():
             shutil.copy(ROOT / "data" / "cards" / c, SITE / "cards" / c)
-    extra = {"x_post": g.get("x_url") or X_PROFILE, "_comp": g["comp"]}
+    extra = {"x_post": g.get("x_url") or X_PROFILE, "_comp": g["comp"], "players_dir": "../players/"}
     if len(cards) == 2:
         extra.update(card_win=f"../cards/{cards[0]}", card_lose=f"../cards/{cards[1]}")
     run("build.py", [key], 1, extra)
@@ -118,10 +118,27 @@ for cid, c in COMPS.items():
     run("top.py", ["tourney", cid], depth, {"_comp": cid})
     merge("Tourney.dc.html", "TourneyMobile.dc.html", SITE / c["page"], f"{c['name']}｜ベースボール通信簿",
           f"{c['name']}の全試合を、日付ごとに。全選手を10点満点で採点した通信簿の一覧です。")
+run("players.py", [], 1)
+for m in json.loads((TMP / "players" / "manifest.json").read_text(encoding="utf-8")):
+    merge(f"players/{m['pid']}.pc.dc.html", f"players/{m['pid']}.sp.dc.html", SITE / "players" / f"{m['pid']}.html", m["title"], m["desc"])
+merge("players/index.pc.dc.html", "players/index.sp.dc.html", SITE / "players" / "index.html", "選手一覧｜ベースボール通信簿",
+      "ベースボール通信簿で採点した全選手の一覧。名前から試合ごとの通信簿へ。")
 run("privacy.py", [], 0)
 merge("Privacy.dc.html", "PrivacyMobile.dc.html", SITE / "privacy.html", "プライバシーポリシー｜ベースボール通信簿",
       "ベースボール通信簿のプライバシーポリシー（アクセス解析と外部への情報送信について）。")
 run("top.py", [], 0)
 merge("Top.dc.html", "TopMobile.dc.html", SITE / "index.html", "ベースボール通信簿｜全試合、全選手の活躍を採点！",
       "野球の全試合・全選手を10点満点で採点する「通信簿」。打った・抑えただけでなく、その場面がどれだけ勝敗を動かしたかで点をつけます。")
+# 検索エンジン向け（サイトマップと robots.txt）
+import datetime as _dt
+BASE = "https://baseballreportcard.com/"
+today = _dt.date.today().isoformat()
+pages = sorted(p.relative_to(SITE).as_posix() for p in SITE.rglob("*.html"))
+locs = []
+for rel in pages:
+    loc = BASE + ("" if rel == "index.html" else rel)
+    pri = "1.0" if rel == "index.html" else ("0.8" if rel.startswith(("tournaments/", "games/")) else "0.6")
+    locs.append(f"<url><loc>{loc}</loc><lastmod>{today}</lastmod><priority>{pri}</priority></url>")
+(SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(locs) + "\n</urlset>\n")
+(SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}sitemap.xml\n")
 print(f"{sum(1 for p in SITE.rglob('*') if p.is_file())} files -> {SITE}")

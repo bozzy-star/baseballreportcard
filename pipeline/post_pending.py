@@ -40,7 +40,7 @@ def draft(out):
              "文章を直したいときは「**直して：〇〇**」とコメントしてください（例：直して：もっと逆転劇を強調して）。注文どおりに書き直して、新しい確認用 Issue を作ります。", ""]
     for g in ps:
         lines += [f"### {g['label']}　{g['score']}", f"ページ: https://baseballreportcard.com/games/{g['key']}.html", "", "```", g["post_text"], "```", ""]
-        lines += [f"![{c}]({RAW}/{c})" for c in g.get("cards", [])] + [""]
+        lines += [f"![{c}]({RAW}/{c})" for c in (g.get("player_cards", []) + g.get("cards", []))[:4]] + [""]
         g["post_status"] = "draft"
     lines.append(f"<!-- keys: {','.join(g['key'] for g in ps)} -->")
     pathlib.Path(out).write_text("\n".join(lines), encoding="utf-8")
@@ -57,7 +57,8 @@ def send(keys, auto=False, report=None):
         return
     k = load_keys()
     for g in ps:
-        ids = [upload_image(ROOT / "data" / "cards" / c, k) for c in g.get("cards", [])]
+        imgs = (g.get("player_cards", []) + g.get("cards", []))[:4]
+        ids = [upload_image(ROOT / "data" / "cards" / c, k) for c in imgs]
         res = create_post(g["post_text"], ids, k)
         pid = (res.get("data") or {}).get("id")
         g["x_url"] = f"https://x.com/BaseBalltannin/status/{pid}" if pid else None

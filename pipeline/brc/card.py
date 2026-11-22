@@ -339,6 +339,93 @@ def _badge(d, x, right, top):
     d.text((right - bw_ / 2, top + 15), badge, font=F("Bold", 21), fill=NAVY, anchor="mm")
 
 
+def player_card(r, x, label, path, meta=None):
+    """選手1人の通信簿カード（MVP・敢闘賞）。本人や家族が保存・共有しやすい形。"""
+    meta = meta or {}
+    g, f = r["game"], r["final"]
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img)
+    d.text((60, 44), BRAND, font=F("Bold", 26), fill=GOLD)
+    short = meta.get("short_name") or g.get("tournament", "").split(" ")[0]
+    ev = f"{short} {g.get('round', '')}".strip()
+    d.text((W - 60, 44), ev, font=fit(d, ev, "Medium", 24, 520), fill=SUB, anchor="ra")
+    # ラベル
+    lw = d.textlength(label, font=F("Black", 40)) + 56
+    d.rounded_rectangle((60, 110, 60 + lw, 176), radius=33, fill=GOLD)
+    d.text((60 + lw / 2, 143), label, font=F("Black", 40), fill=NAVY, anchor="mm")
+    # 名前と所属
+    nm = x["player"].replace(" ", "")
+    d.text((60, 206), nm, font=fit(d, nm, "Black", 118, W - 120), fill=INK)
+    sub = player_meta(x, g.get("league"))
+    if meta.get("grade"):
+        sub = sub.replace("　", f"（{meta['grade']}）　", 1)
+    d.text((64, 356), sub, font=fit(d, sub, "Bold", 34, W - 128), fill=SUB)
+    # 点数
+    top, bot = 430, 760
+    d.rounded_rectangle((60, top, W - 60, bot), radius=28, fill=PANEL)
+    ico = silhouette("pitcher" if x["pitcher"] else "batter", bot - top - 40, GOLD, PANEL if x["pitcher"] else None)
+    img.paste(ico, (90, top + 20), ico)
+    d.text((W - 110, top + (bot - top) // 2 - 10), f"{x['score']:.1f}", font=F("Black", 230), fill=GOLD, anchor="rm")
+    d.text((W - 110, bot - 40), "10点満点", font=F("Bold", 28), fill=SUB, anchor="rm")
+    if x.get("raw_score", 0) > 10:
+        _badge(d, x, W - 110, top + 26)
+    # 成績と決め手
+    y = 800
+    st = x["stat"]
+    d.text((60, y), st, font=fit(d, st, "Bold", 36, W - 120), fill=INK)
+    y += 62
+    agg = {}
+    for q in (x.get("reasons_all") or x.get("reasons") or []):
+        if q.get("wpa") is not None:
+            a_ = agg.setdefault(q["text"], {"text": q["text"], "wpa": 0.0, "n": 0})
+            a_["wpa"] += q["wpa"]
+            a_["n"] += 1
+    rs = sorted((q for q in agg.values() if q["wpa"] >= 0.01), key=lambda q: -q["wpa"])[:3]
+    for q in rs:
+        if q["n"] > 1:
+            q["text"] += f"（{q['n']}度）"
+        t = f"・{q['text']}"
+        d.text((64, y), t, font=fit(d, t, "Medium", 30, W - 330), fill=INK)
+        d.text((W - 60, y), f"勝利確率 +{q['wpa'] * 100:.0f}%", font=F("Bold", 28), fill=UP, anchor="ra")
+        y += 48
+    # 試合
+    y = max(y + 20, 1060)
+    res = f"{g['away']} {f['away']} - {f['home']} {g['home']}"
+    d.line((60, y, W - 60, y), fill=LINE, width=2)
+    d.text((60, y + 24), res, font=fit(d, res, "Bold", 34, W - 120), fill=GOLD)
+    date = g.get("date", "")
+    if date:
+        y_, m_, d_ = date.split("-")
+        date = f"{y_}.{int(m_)}.{int(d_)}"
+    evf = f"{meta.get('event_name') or g.get('tournament', '')}　{date}".strip()
+    d.text((60, y + 78), evf, font=fit(d, evf, "Medium", 22, W - 120), fill=SUB)
+    d.text((60, H - 44), f"{BRAND}　{HANDLE}", font=F("Bold", 22), fill=GOLD, anchor="lm")
+    d.text((W - 60, H - 44), SITE, font=F("Medium", 22), fill=SUB, anchor="rm")
+    img.save(path)
+    return path
+
+
+def award_picks(r, limit=2):
+    """選手カードを作る選手（野手MVP→投手MVP→敢闘賞の順で最大 limit 人）。"""
+    a = r["awards"]
+    out = []
+    for label, key in (("野手MVP", "fielder_mvp"), ("投手MVP", "pitcher_mvp"), ("敢闘賞", "fighting_spirit")):
+        x = next((q for q in r["ratings"] if a.get(key) and q["player"] == a[key]), None)
+        if x and x["player"] not in [p[1]["player"] for p in out]:
+            out.append((label, x))
+    return out[:limit]
+
+
+def player_cards(r, out_dir, meta=None, grades=None):
+    out = pathlib.Path(out_dir)
+    gid = r["game"].get("id", "game")
+    paths = []
+    for i, (label, x) in enumerate(award_picks(r)):
+        m = dict(meta or {}, grade=((grades or {}).get(x["team"]) or {}).get(x["player"]))
+        paths.append(player_card(r, x, label, out / f"{gid}-p{i + 1}.png", m))
+    return paths
+
+
 def make_cards(r, out_dir, summary=None, meta=None):
     out = pathlib.Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
