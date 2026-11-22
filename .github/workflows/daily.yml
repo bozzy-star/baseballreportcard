@@ -14,8 +14,6 @@ on:
       date:
         description: "処理する日（空なら今日）"
         default: ""
-  push:
-    branches: [run]
 
 permissions:
   contents: write
