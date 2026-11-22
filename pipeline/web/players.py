@@ -110,15 +110,15 @@ def player_page(comp, p, mobile):
     stats = [("出場", f'{len(p["games"])}<span style="font-size: 14px">試合</span>'), ("大会通算", f'{p["total"]:+.1f}'), ("最高", f'{p["best"]:.1f}')]
     stat_html = "".join(f'<div style="flex: 1; min-width: 90px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700; color: {SUB}">{k}</span>'
                         f'<span class="hand" style="font-size: {34 if mobile else 40}px; color: {RED}; line-height: 1.1">{v}</span></div>' for k, v in stats)
-    awards = "".join(chip(a) for a in p["awards"])
+    awards = "".join(f'<span style="display: inline-flex; align-items: center; gap: 4px">{B.badge(a, 30)}{chip(a)}</span>' for a in p["awards"])
     rows = ""
     for q in p["games"]:
         head = f'{D.md_ja(q["date"])}　{q["comp"]} {q["div"]} {q["round"]}'
         res = chip(q["res"], RED if q["res"] == "勝" else "#3D5C93")
-        aw = chip(q["award"], "#E2B448") if q["award"] else ""
+        aw = f'<span style="display: inline-flex; align-items: center; gap: 3px">{B.badge(q["award"], 24)}{chip(q["award"], "#E2B448")}</span>' if q["award"] else ""
         over = f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}">上限突破 {q["raw"]:.1f}</span>' if q["raw"] > 10 else ""
         rows += f"""<a href="{R(q['page'])}" style="display: flex; gap: {12 if mobile else 18}px; align-items: flex-start; padding: 14px 4px; border-bottom: 1px solid {LINE}; color: {INK}; text-decoration: none">
-          <span style="flex: none; width: {56 if mobile else 72}px; text-align: center"><span class="hand" style="font-size: {34 if mobile else 40}px; color: {B.score_color(q['pt'])}; line-height: 1">{q['pt']:.1f}</span>{over}</span>
+          <span style="flex: none; width: {56 if mobile else 72}px; display: flex; flex-direction: column; align-items: center; gap: 3px; position: relative">{B.hanamaru(64 if mobile else 76, -12) if q['pt'] >= B.HANAMARU_AT else ''}<span class="hand" style="font-size: {34 if mobile else 40}px; color: {B.score_color(q['pt'])}; line-height: 1; position: relative">{q['pt']:.1f}</span>{B.face(q['pt'], 22)}{over}</span>
           <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
             <span style="font-size: 12px; color: {SUB}">{esc(head)}</span>
             <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px"><span style="font-size: {16 if mobile else 18}px; font-weight: 900">対 {esc(q['opp'])}　{q['score']}</span>{res}{aw}</span>
@@ -251,7 +251,8 @@ def team_page(comp, ps, div, team, mobile):
                 x = by.get(q["key"])
                 if x:
                     aw = f'<span style="display: block; font-size: 10px; font-weight: 900; color: #B8860B; white-space: nowrap">{x["award"]}</span>' if x["award"] else ""
-                    cells += f'<td style="text-align: center"><span class="hand" style="font-size: {20 if mobile else 24}px; color: {B.score_color(x["pt"])}; line-height: 1">{x["pt"]:.1f}</span>{aw}</td>'
+                    cells += (f'<td style="text-align: center"><span style="display: inline-flex; align-items: center; gap: {3 if mobile else 6}px">{B.badge(x["award"], 18 if mobile else 22) if x["award"] else B.face(x["pt"], 16 if mobile else 20)}'
+                              f'<span class="hand" style="font-size: {20 if mobile else 24}px; color: {B.score_color(x["pt"])}; line-height: 1">{x["pt"]:.1f}</span></span>{aw}</td>')
                 else:
                     cells += '<td style="text-align: center; color: #B8C3D6">—</td>'
             tot = (f'<span class="hand" style="font-size: {20 if mobile else 24}px; color: {RED if p["total"] > 0 else SUB}; line-height: 1">{p["total"]:+.1f}</span>'

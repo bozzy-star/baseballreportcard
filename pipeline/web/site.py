@@ -43,7 +43,7 @@ def urls(extra=None):
     u = {"top": "index.html", "tournaments": "tournaments/index.html", "family": paths.family_page(comp),
          "tournament": paths.comp_page(comp), "archive": paths.comp_page(comp) + "#archive", "players": paths.players_page(comp),
          "rules": "scoring.html", "privacy": "privacy.html", "img_batter": "assets/batter-navy.png", "img_pitcher": "assets/pitcher-navy.png",
-         "img_hero": "assets/hero-stadium.jpg"}
+         "img_hero": "assets/hero-stadium.jpg", "img_hanamaru": "assets/badges/hanamaru.png"}
     for g in PUB:
         c = COMPS[g["comp"]]
         u["game:" + g["key"]] = paths.game_page(c, g)

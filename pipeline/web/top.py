@@ -87,7 +87,7 @@ def hero_card(h, m):
     img = B.BATTER if h["img"] == "batter" else B.PITCHER
     over = h["raw"] > 10
     badge = (f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 2px 10px; border-radius: 999px; position: relative">上限突破！ {h["raw"]:.1f}</span>' if over else "")
-    flower = B.HANAMARU.format(w=84 if m else 104, t=-12) if h["score"] >= 9.5 else ""
+    flower = B.HANAMARU.format(w=84 if m else 104, t=-12) if h["score"] >= B.HANAMARU_AT else ""
     return f"""<div class="paper" style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: 8px; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
             <div style="display: flex; align-items: center; gap: {12 if m else 18}px">
               <img src="{img}" alt="" aria-hidden="true" style="width: {72 if m else 96}px; height: auto; flex: none">

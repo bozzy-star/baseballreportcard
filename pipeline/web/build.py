@@ -152,12 +152,35 @@ def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;")
 
 
-HANAMARU = ('<svg viewBox="0 0 100 100" width="{w}" height="{w}" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
-            'transform: translateX(-50%); opacity: 0.35"><g fill="none" stroke="#D7262E" stroke-width="4" stroke-linecap="round">'
-            + "".join(f'<circle cx="{cx}" cy="{cy}" r="11"></circle>' for cx, cy in [
-                (84.0, 50.0), (79.4, 67.0), (67.0, 79.4), (50.0, 84.0), (33.0, 79.4), (20.6, 67.0), (16.0, 50.0),
-                (20.6, 33.0), (33.0, 20.6), (50.0, 16.0), (67.0, 20.6), (79.4, 33.0)])
-            + '<path d="M50 50 m-4 0 a4 4 0 1 1 8 0 a8 8 0 1 1 -16 0 a12 12 0 1 1 24 0 a16 16 0 1 1 -32 0"></path></g></svg>')
+HANAMARU = ('<img src="' + U("img_hanamaru") + '" alt="" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
+            'transform: translateX(-50%); width: {w}px; height: {w}px; opacity: 0.35">')
+HANAMARU_AT = 8.5  # この点以上に花丸
+
+
+def hanamaru(w, t):
+    """ページごとに相対リンクを作り直す版（選手ページなど、1回の実行で複数ページを作るとき用）。"""
+    return (f'<img src="{img_url("hanamaru")}" alt="" aria-hidden="true" style="position: absolute; top: {t}px; left: 50%; '
+            f'transform: translateX(-50%); width: {w}px; height: {w}px; opacity: 0.35">')
+
+
+def img_url(name):
+    """バッジ画像のリンク（assets/badges/）。"""
+    return R(f"assets/badges/{name}.png")
+
+
+def face(score, size=18):
+    """点数に応じた顔マーク（7.0以上＝にっこり、6.0〜6.5＝ふつう、6.0未満＝こまり顔）。"""
+    name = "face-good" if score >= 7.0 else ("face-ok" if score >= 6.0 else "face-bad")
+    alt = {"face-good": "よくできました", "face-ok": "及第点", "face-bad": "もう少し"}[name]
+    return f'<img src="{img_url(name)}" alt="{alt}" title="{alt}" style="width: {size}px; height: {size}px; vertical-align: middle; flex: none">'
+
+
+def badge(award, size=22):
+    """表彰のバッジ（野手MVP・投手MVP＝MVP、敢闘賞）。"""
+    if not award:
+        return ""
+    name = "kanto" if award == "敢闘賞" else "mvp"
+    return f'<img src="{img_url(name)}" alt="{award}" title="{award}" style="width: {size}px; height: {size}px; vertical-align: middle; flex: none">'
 
 # 試合を動かしたプレー（上位3）
 TYPE_JA = {"HR": "本塁打", "3B": "三塁打", "2B": "二塁打", "1B": "ヒット"}
@@ -451,7 +474,7 @@ def award_cards(mobile):
         if not mobile:
             out.append(f"""<div class="sheet" style="display: flex; align-items: stretch; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="flex: none; width: 128px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 14px 16px; background-color: {band}; color: #FFFFFF">
-                <span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{x["team"]}</span></div>
+                <span style="display: inline-flex; padding: 3px; background-color: #FFFFFF; border-radius: 999px; align-self: flex-start; margin-bottom: 4px">{badge(label, 44)}</span><span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{x["team"]}</span></div>
               <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 14px 20px">
                 <span style="display: flex; align-items: center; gap: 12px; flex: none">
                   <img src="{ico}" alt="" aria-hidden="true" style="width: 52px; height: auto; flex: none">
@@ -464,7 +487,7 @@ def award_cards(mobile):
                 </span>
               </div>
               <div style="flex: none; width: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px 0">
-                {HANAMARU.format(w=88, t=0) if x['score'] >= 9.5 else ''}
+                {HANAMARU.format(w=88, t=0) if x['score'] >= HANAMARU_AT else ''}
                 <span class="hand" style="font-size: 56px; color: {band}; line-height: 1; position: relative">{x['score']:.1f}</span>
                 {f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 1px 8px; border-radius: 999px; position: relative; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if over else ''}
               </div>
@@ -472,7 +495,7 @@ def award_cards(mobile):
             continue
         out.append(f"""<div class="sheet" style="display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background-color: {band}; color: #FFFFFF">
-                <span style="font-size: 15px; font-weight: 900; letter-spacing: 0.05em">{label}</span>
+                <span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-flex; padding: 2px; background-color: #FFFFFF; border-radius: 999px">{badge(label, 30)}</span><span style="font-size: 15px; font-weight: 900; letter-spacing: 0.05em">{label}</span></span>
                 <span style="font-size: 13px; font-weight: 700; white-space: nowrap">{x["team"]}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px 10px">
@@ -482,7 +505,7 @@ def award_cards(mobile):
                   <span style="font-size: 14px; font-weight: 700; color: {SUB}">{role}</span>
                 </span>
                 <span style="display: flex; flex-direction: column; align-items: center; flex: none; position: relative; min-width: 84px">
-                  {HANAMARU.format(w=80, t=-12) if x['score'] >= 9.5 else ''}
+                  {HANAMARU.format(w=80, t=-12) if x['score'] >= HANAMARU_AT else ''}
                   <span class="hand" style="font-size: 52px; color: {band}; line-height: 1; position: relative">{x['score']:.1f}</span>
                   {f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: {RED}; padding: 1px 8px; border-radius: 999px; position: relative; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if over else ''}
                 </span>
@@ -535,7 +558,8 @@ def team_table(side, mobile):
 
     def mark(x):
         aw = award_of(x)
-        return f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: #D7262E; padding: 1px 8px; border-radius: 999px; margin-left: 6px; white-space: nowrap">{aw}</span>' if aw else ""
+        return (f'<span style="display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; vertical-align: middle">{badge(aw, 24)}'
+                f'<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background-color: #D7262E; padding: 1px 8px; border-radius: 999px; white-space: nowrap">{aw}</span></span>') if aw else ""
 
     if mobile:
         def card(x, kind):
@@ -554,7 +578,7 @@ def team_table(side, mobile):
             wc = "#2E9E6B" if x['wpa'] >= 0.005 else (RED if x['wpa'] <= -0.005 else SUB)
             hl = "background-color: #FFF4D6; " if award_of(x) else ""
             return f"""<div style="{hl}display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 9px 2px; border-bottom: 1px solid {LINE}">
-                <span style="flex: none; width: 52px; display: flex; flex-direction: column; align-items: center"><span class="hand" style="font-size: 32px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="font-size: 9px; font-weight: 900; color: {RED}; white-space: nowrap">突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</span>
+                <span style="flex: none; width: 52px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span class="hand" style="font-size: 32px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{face(x['score'], 18)}{f'<span style="font-size: 9px; font-weight: 900; color: {RED}; white-space: nowrap">突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</span>
                 <span style="flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: 1px">
                   <span style="display: flex; align-items: center; justify-content: space-between; gap: 6px"><span style="font-size: 16px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{plink(x)}{mark(x)}</span><span style="font-size: 12px; font-weight: 900; color: {wc}; white-space: nowrap; font-variant-numeric: tabular-nums">{x['wpa'] * 100:+.0f}%</span></span>
                   <span style="font-size: 12px; color: {SUB}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{order}{pos}　{x['stat']}</span>
@@ -582,7 +606,7 @@ def team_table(side, mobile):
                 {f'<td style="color: {SUB}">{x.get("number") or ""}</td>' if HAS_NUM else ''}
                 <td><span style="display: block; font-weight: 900; font-size: 16px; white-space: nowrap">{plink(x)}{mark(x)}</span><span style="display: block; font-size: 12px; color: {SUB}; max-width: 15em; line-height: 1.5">{x['stat']}</span></td>
                 <td style="white-space: nowrap">{bar(x['wpa'], 40)}</td>
-                <td style="text-align: center; white-space: nowrap"><span class="hand" style="font-size: 30px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span>{f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</td>
+                <td style="text-align: center; white-space: nowrap"><span style="display: inline-flex; align-items: center; gap: 6px">{face(x['score'], 22)}<span class="hand" style="font-size: 30px; color: {score_color(x['score'])}; line-height: 1">{x['score']:.1f}</span></span>{f'<span style="display: block; font-size: 10px; font-weight: 900; color: {RED}; white-space: nowrap">上限突破 {x["raw_score"]:.1f}</span>' if x['raw_score'] > 10 else ''}</td>
                 <td style="width: 100%"><div class="cm" style="font-size: 13px; line-height: 1.6; min-width: 44em">{esc(x['comment'])}</div></td>
               </tr>"""
     thead = f'<tr><th scope="col">打順</th><th scope="col">守備</th>{'<th scope="col">背番号</th>' if HAS_NUM else ''}<th scope="col">選手・成績</th><th scope="col">貢献度</th><th scope="col" style="text-align: center">採点</th><th scope="col">担任からの一言</th></tr>'
