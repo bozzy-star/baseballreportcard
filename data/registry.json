@@ -347,7 +347,7 @@
     "2026-11-22-jingu-hs-1-2-home.png"
    ],
    "status": "published",
-   "post_status": "pending",
+   "post_status": "draft",
    "source": {
     "site": "sportsnavi",
     "league": "hsb_jingu",
@@ -379,7 +379,7 @@
     "2026-11-22-jingu-hs-2-2-home.png"
    ],
    "status": "published",
-   "post_status": "pending",
+   "post_status": "draft",
    "source": {
     "site": "sportsnavi",
     "league": "hsb_jingu",
