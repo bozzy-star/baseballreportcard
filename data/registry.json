@@ -25,7 +25,7 @@
    },
    "score": "仙台育英 7-6 鹿児島城西",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-19-jingu-hs-2",
@@ -52,7 +52,7 @@
    },
    "score": "北海 7-5 創志学園",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-19-jingu-univ-1",
@@ -79,7 +79,7 @@
    },
    "score": "筑波大 10-5 中京大",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-19-jingu-univ-2",
@@ -106,7 +106,7 @@
    },
    "score": "神戸医療未来大 2-0 環太平洋大",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-20-jingu-hs-qf1",
@@ -133,7 +133,7 @@
    },
    "score": "二松学舎大付 4-1 明徳義塾",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-20-jingu-hs-qf2",
@@ -160,7 +160,7 @@
    },
    "score": "常葉大菊川 4-1 帝京長岡",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-20-jingu-univ-1",
@@ -187,7 +187,7 @@
    },
    "score": "九州共立大 10-7 日本体育大",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-20-jingu-univ-2",
@@ -214,7 +214,7 @@
    },
    "score": "大阪商業大 10-6 東農大オホーツク",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-21-jingu-hs-qf3",
@@ -241,7 +241,7 @@
    },
    "score": "横浜 8-7 仙台育英",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-21-jingu-hs-qf4",
@@ -268,7 +268,7 @@
    },
    "score": "京都国際 5-2 北海",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-21-jingu-univ-1",
@@ -295,7 +295,7 @@
    },
    "score": "筑波大 2-1 明治大",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
   },
   {
    "key": "2026-11-21-jingu-univ-2",
@@ -322,7 +322,71 @@
    },
    "score": "仙台大 13-1 神戸医療未来大",
    "post_status": "posted",
-   "grades_done": false
+   "grades_done": true
+  },
+  {
+   "key": "2026-11-22-jingu-hs-1",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-22",
+   "start": "10:00",
+   "end": "12:25",
+   "venue": "神宮",
+   "round": "準決勝（7回コールド）",
+   "label": "高校の部 準決勝（7回コールド）",
+   "src": "data/games/2026-11-22-jingu-hs-1.json",
+   "score": "横浜 20-7 二松学舎大付",
+   "summary": "横浜が20-7で勝利。得点経過は、1回表 横浜 脇山魁音 安打 2点、1回裏 二松学舎大付、1回裏 二松学舎大付 内間叶琉 四球 1点、1回裏 二松学舎大付 坂井誠史郎 二塁打 3点、2回表 横浜 川上慧 安打 1点、2回表 横浜 田島陽翔 安打 1点。",
+   "card_summary": "横浜が20-7で勝利。得点経過は、1回表 横浜 脇山魁音 安打 2点、1回裏 二松学舎大付、1回裏 二松学舎大付 内間叶琉 四球 1点、1回裏 二松学舎大付 坂井誠史郎 二塁打 3点、2回表 横浜 川上慧 安打 1点、2回表 横浜 田島陽翔 安打 1点。",
+   "comment": "横浜が20-7で勝利。",
+   "post_text": "【神宮大会 高校の部 準決勝（7回コールド）】\n横浜 20-7 二松学舎大付\n\n横浜が勝利。\n\n野手MVP 脇山魁音 8.5\n投手MVP 該当者なし\n敢闘賞 坂井誠史郎 9.0\n\n#神宮大会 #ベースボール通信簿\nhttps://baseballreportcard.com/games/2026-11-22-jingu-hs-1.html",
+   "text_by": "template",
+   "x_url": null,
+   "cards": [
+    "2026-11-22-jingu-hs-1-1-away.png",
+    "2026-11-22-jingu-hs-1-2-home.png"
+   ],
+   "status": "published",
+   "post_status": "draft",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053040
+   },
+   "processed_at": "2026-11-22T16:35+09:00",
+   "grades_done": true
+  },
+  {
+   "key": "2026-11-22-jingu-hs-2",
+   "comp": "jingu-2026",
+   "div": "HS",
+   "date": "2026-11-22",
+   "start": "12:30",
+   "end": "14:33",
+   "venue": "神宮",
+   "round": "準決勝",
+   "label": "高校の部 準決勝",
+   "src": "data/games/2026-11-22-jingu-hs-2.json",
+   "score": "常葉大菊川 3-2 京都国際",
+   "summary": "常葉大菊川が3-2で勝利。得点経過は、1回表 常葉大菊川 大石玲央斗 二塁打 2点、3回裏 京都国際 寺田陽大 安打 1点、5回表 常葉大菊川 後藤歩武 本塁打 1点、6回裏 京都国際 亀田虎道 内野ゴロ 1点。",
+   "card_summary": "常葉大菊川が3-2で勝利。得点経過は、1回表 常葉大菊川 大石玲央斗 二塁打 2点、3回裏 京都国際 寺田陽大 安打 1点、5回表 常葉大菊川 後藤歩武 本塁打 1点、6回裏 京都国際 亀田虎道 内野ゴロ 1点。",
+   "comment": "常葉大菊川が3-2で勝利。",
+   "post_text": "【神宮大会 高校の部 準決勝】\n常葉大菊川 3-2 京都国際\n\n常葉大菊川が勝利。\n\n野手MVP 大石玲央斗 9.0\n投手MVP 近藤悠人 10.0\n敢闘賞 越沼優悟 8.0\n\n#神宮大会 #ベースボール通信簿\nhttps://baseballreportcard.com/games/2026-11-22-jingu-hs-2.html",
+   "text_by": "template",
+   "x_url": null,
+   "cards": [
+    "2026-11-22-jingu-hs-2-1-away.png",
+    "2026-11-22-jingu-hs-2-2-home.png"
+   ],
+   "status": "published",
+   "post_status": "draft",
+   "source": {
+    "site": "sportsnavi",
+    "league": "hsb_jingu",
+    "id": 2021053041
+   },
+   "processed_at": "2026-11-22T16:35+09:00",
+   "grades_done": true
   }
  ]
 }

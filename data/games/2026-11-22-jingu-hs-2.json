@@ -1,0 +1,1085 @@
+{
+ "game": {
+  "id": "2026-11-22-jingu-hs-2",
+  "date": "2026-11-22",
+  "tournament": "神宮大会 高校の部",
+  "round": "準決勝",
+  "league": "HS",
+  "away": "常葉大菊川",
+  "home": "京都国際",
+  "hits_errors": {
+   "away": [
+    10,
+    1
+   ],
+   "home": [
+    6,
+    0
+   ]
+  }
+ },
+ "lineups": {
+  "away": {
+   "RF": "金本 優志",
+   "SS": "小柳 祥太郎",
+   "1B": "片出 憲志",
+   "DH": "山崎 拓己",
+   "CF": "大石 玲央斗",
+   "LF": "宗廣 新",
+   "3B": "大畑 颯志",
+   "2B": "堀内 遥斗",
+   "C": "後藤 歩武",
+   "P": "近藤 悠人"
+  },
+  "home": {
+   "SS": "藤本 玄岐",
+   "CF": "堀内 悠海",
+   "C": "川北 健瑠",
+   "3B": "寺田 陽大",
+   "1B": "鎌田 梓暖",
+   "DH": "野沢 栄之助",
+   "RF": "亀田 虎道",
+   "2B": "藤本 統守",
+   "LF": "佐々木 琥央",
+   "P": "井川 琉青"
+  }
+ },
+ "events": [
+  {
+   "batter": "金本 優志",
+   "type": "K",
+   "result_text": "空振り三振 1アウト",
+   "inn": 1,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "小柳 祥太郎",
+   "type": "1B",
+   "result_text": "三塁側へ絶妙なセーフティバント！内野安打で出塁する 一塁",
+   "inn": 1,
+   "half": "top",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "片出 憲志",
+   "type": "HBP",
+   "result_text": "デッドボールを受ける 一二塁",
+   "inn": 1,
+   "half": "top",
+   "outs": 1,
+   "bases": "12",
+   "runs": 0
+  },
+  {
+   "batter": "山崎 拓己",
+   "type": "OUT",
+   "result_text": "ファーストへのファウルフライに倒れる 2アウト",
+   "inn": 1,
+   "half": "top",
+   "outs": 2,
+   "bases": "12",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "batter": "大石 玲央斗",
+   "type": "2B",
+   "result_text": "ランナー一二塁からセンターへのタイムリーツーベースで常葉大菊川先制！ 京国際 0-2 菊川 二塁",
+   "inn": 1,
+   "half": "top",
+   "outs": 2,
+   "bases": "2",
+   "runs": 2,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "宗廣 新",
+   "type": "OUT",
+   "result_text": "ファウルフライを鎌田(一)がつかんでバッターアウト 3アウト",
+   "inn": 1,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "batter": "藤本 玄岐",
+   "type": "OUT",
+   "result_text": "ファーストゴロ 1アウト",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "batter": "堀内 悠海",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 2アウト",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "川北 健瑠",
+   "type": "BB",
+   "result_text": "フォアボールを選ぶ 一塁",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "寺田 陽大",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 3アウト",
+   "inn": 1,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "大畑 颯志",
+   "type": "K",
+   "result_text": "空振り三振 1アウト",
+   "inn": 2,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "堀内 遥斗",
+   "type": "OUT",
+   "result_text": "サードゴロ 2アウト",
+   "inn": 2,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "3B"
+   ]
+  },
+  {
+   "batter": "後藤 歩武",
+   "type": "OUT",
+   "result_text": "外角高めのストレートを打つもセンターフライ 3アウト",
+   "inn": 2,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "鎌田 梓暖",
+   "type": "OUT",
+   "result_text": "ショートゴロ 1アウト",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "野沢 栄之助",
+   "type": "OUT",
+   "result_text": "ショートゴロ 2アウト",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "亀田 虎道",
+   "type": "1B",
+   "result_text": "レフトへのヒットで出塁 一塁",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "LF"
+   ]
+  },
+  {
+   "batter": "藤本 統守",
+   "type": "1B",
+   "result_text": "ライトへのヒットを放つ 二三塁",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "23",
+   "runs": 0,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "batter": "佐々木 琥央",
+   "type": "OUT",
+   "result_text": "ランナー二三塁からショートゴロ 3アウト",
+   "inn": 2,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "金本 優志",
+   "type": "OUT",
+   "result_text": "ショートゴロ 1アウト",
+   "inn": 3,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "小柳 祥太郎",
+   "type": "1B",
+   "result_text": "ライトへのヒットで出塁 一塁",
+   "inn": 3,
+   "half": "top",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "batter": "片出 憲志",
+   "type": "OUT",
+   "result_text": "ファーストゴロ 2アウト一塁",
+   "inn": 3,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "type": "CS",
+   "inn": 3,
+   "half": "top",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0,
+   "runner": "片出 憲志"
+  },
+  {
+   "batter": "藤本 玄岐",
+   "type": "1B",
+   "result_text": "センターへのヒットを放つ 一塁",
+   "inn": 3,
+   "half": "bottom",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "堀内 悠海",
+   "type": "SH",
+   "result_text": "見事送りバントを成功させる 1アウト二塁",
+   "inn": 3,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "川北 健瑠",
+   "type": "K",
+   "result_text": "空振り三振でバッターアウト 2アウト",
+   "inn": 3,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "寺田 陽大",
+   "type": "1B",
+   "result_text": "2アウト二塁の0-2からライトへのタイムリーヒット 京国際 1-2 菊川 一塁",
+   "inn": 3,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 1,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "batter": "鎌田 梓暖",
+   "type": "OUT",
+   "result_text": "外角低めの落ちる球を打つもショートライナー 3アウト",
+   "inn": 3,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "山崎 拓己",
+   "type": "OUT",
+   "result_text": "ショートゴロ 1アウト",
+   "inn": 4,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "大石 玲央斗",
+   "type": "1B",
+   "result_text": "センターへのヒットを放つ 一塁",
+   "inn": 4,
+   "half": "top",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "宗廣 新",
+   "type": "OUT",
+   "result_text": "外角高めのストレートを引っかけてショートゴロ 2アウト一塁",
+   "inn": 4,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "type": "CS",
+   "inn": 4,
+   "half": "top",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0,
+   "runner": "宗廣 新"
+  },
+  {
+   "batter": "野沢 栄之助",
+   "type": "OUT",
+   "result_text": "ショートゴロ 1アウト",
+   "inn": 4,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "亀田 虎道",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 2アウト",
+   "inn": 4,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "藤本 統守",
+   "type": "HBP",
+   "result_text": "デッドボールを受ける 一塁",
+   "inn": 4,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "type": "CS",
+   "inn": 4,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "1",
+   "runs": 0,
+   "runner": "藤本 統守"
+  },
+  {
+   "batter": "大畑 颯志",
+   "type": "OUT",
+   "result_text": "ファーストゴロ 1アウト",
+   "inn": 5,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "batter": "堀内 遥斗",
+   "type": "OUT",
+   "result_text": "ショートゴロ 2アウト",
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "後藤 歩武",
+   "type": "HR",
+   "result_text": "ホームラン 京国際 1-3 菊川",
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 1
+  },
+  {
+   "batter": "金本 優志",
+   "type": "1B",
+   "result_text": "サードへの痛烈な打球の内野安打 一塁",
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "3B"
+   ]
+  },
+  {
+   "batter": "小柳 祥太郎",
+   "type": "1B",
+   "result_text": "レフトへのヒットで出塁 一二塁",
+   "inn": 5,
+   "half": "top",
+   "outs": 2,
+   "bases": "12",
+   "runs": 0,
+   "fielders": [
+    "LF"
+   ]
+  },
+  {
+   "batter": "片出 憲志",
+   "type": "OUT",
+   "result_text": "ファーストゴロ 3アウト",
+   "inn": 5,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "1B"
+   ]
+  },
+  {
+   "batter": "佐々木 琥央",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 1アウト",
+   "inn": 5,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "藤本 玄岐",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 2アウト",
+   "inn": 5,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "堀内 悠海",
+   "type": "BB",
+   "result_text": "ストレートのフォアボールで出塁 一塁",
+   "inn": 5,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "inn": 5,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "2",
+   "runs": 0,
+   "runner": "堀内 悠海"
+  },
+  {
+   "batter": "川北 健瑠",
+   "type": "OUT",
+   "result_text": "ショートゴロ 3アウト",
+   "inn": 5,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "sub": {
+    "team": "home",
+    "pos": "P",
+    "player": "越沼 優悟"
+   }
+  },
+  {
+   "batter": "山崎 拓己",
+   "type": "OUT",
+   "result_text": "ショートゴロ 1アウト",
+   "inn": 6,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "大石 玲央斗",
+   "type": "K",
+   "result_text": "空振り三振でバッターアウト 2アウト",
+   "inn": 6,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "宗廣 新",
+   "type": "K",
+   "result_text": "空振り三振でバッターアウト 3アウト",
+   "inn": 6,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "寺田 陽大",
+   "type": "1B",
+   "result_text": "センターへのヒットで出塁 一塁",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "鎌田 梓暖",
+   "type": "SH",
+   "result_text": "見事送りバントを成功させる 1アウト二塁",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "2",
+   "runs": 0
+  },
+  {
+   "batter": "野沢 栄之助",
+   "type": "1B",
+   "result_text": "1アウト二塁からレフトへのヒットを放つ 一三塁",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "13",
+   "runs": 0,
+   "fielders": [
+    "LF"
+   ]
+  },
+  {
+   "batter": "亀田 虎道",
+   "type": "OUT",
+   "result_text": "サードゴロの間に京都国際1点をあげる 京国際 2-3 菊川 2アウト一塁",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 1,
+   "fielders": [
+    "3B"
+   ]
+  },
+  {
+   "batter": "藤本 統守",
+   "type": "OUT",
+   "result_text": "ショートゴロ 3アウト",
+   "inn": 6,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "SS"
+   ]
+  },
+  {
+   "batter": "大畑 颯志",
+   "type": "OUT",
+   "result_text": "外角高めのスライダーを打つもレフトフライ 1アウト",
+   "inn": 7,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "LF"
+   ]
+  },
+  {
+   "batter": "堀内 遥斗",
+   "type": "K",
+   "result_text": "空振り三振でバッターアウト 2アウト",
+   "inn": 7,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "後藤 歩武",
+   "type": "1B",
+   "result_text": "センターへのヒットを放つ 一塁",
+   "inn": 7,
+   "half": "top",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "sub": {
+    "team": "away",
+    "player": "堀内 陽登",
+    "role": "PH"
+   }
+  },
+  {
+   "batter": "堀内 陽登",
+   "type": "OUT",
+   "result_text": "外角のストレートを打つもサードライナー 3アウト",
+   "inn": 7,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "3B"
+   ]
+  },
+  {
+   "sub": {
+    "team": "away",
+    "pos": "RF",
+    "player": "堀内 陽登"
+   }
+  },
+  {
+   "batter": "佐々木 琥央",
+   "type": "OUT",
+   "result_text": "セーフティバントを試みるもピッチャーゴロとなる 1アウト",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "P"
+   ]
+  },
+  {
+   "batter": "藤本 玄岐",
+   "type": "OUT",
+   "result_text": "セカンドゴロ 2アウト",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "堀内 悠海",
+   "type": "BB",
+   "result_text": "四球を選ぶ 一塁",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "type": "SB",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "3",
+   "runs": 0,
+   "runner": "堀内 悠海"
+  },
+  {
+   "batter": "川北 健瑠",
+   "type": "K",
+   "result_text": "一打同点の場面で空振り三振 3アウト",
+   "inn": 7,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "小柳 祥太郎",
+   "type": "OUT",
+   "result_text": "サードフライ 1アウト",
+   "inn": 8,
+   "half": "top",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "3B"
+   ]
+  },
+  {
+   "batter": "片出 憲志",
+   "type": "OUT",
+   "result_text": "内角のスライダーを打つもライトフライ 2アウト",
+   "inn": 8,
+   "half": "top",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "batter": "山崎 拓己",
+   "type": "OUT",
+   "result_text": "外角の変化球を打つもセンターフライ 3アウト",
+   "inn": 8,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "寺田 陽大",
+   "type": "OUT",
+   "result_text": "ど真ん中の球を打つもセンターフライ 1アウト",
+   "inn": 8,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "CF"
+   ]
+  },
+  {
+   "batter": "鎌田 梓暖",
+   "type": "BB",
+   "result_text": "ストレートのフォアボールで出塁 一塁",
+   "inn": 8,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "野沢 栄之助",
+   "type": "DP",
+   "result_text": "4-6-3のダブルプレー 3アウト",
+   "inn": 8,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B",
+    "SS",
+    "1B"
+   ]
+  },
+  {
+   "batter": "大石 玲央斗",
+   "type": "1B",
+   "result_text": "たたきつける打球で内野安打 一塁",
+   "inn": 9,
+   "half": "top",
+   "outs": 0,
+   "bases": "1",
+   "runs": 0
+  },
+  {
+   "batter": "宗廣 新",
+   "type": "OUT",
+   "result_text": "低めのスライダーを打つもライトフライ 1アウト",
+   "inn": 9,
+   "half": "top",
+   "outs": 1,
+   "bases": "1",
+   "runs": 0,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "batter": "大畑 颯志",
+   "type": "1B",
+   "result_text": "ライトへのヒットを放つ 一三塁",
+   "inn": 9,
+   "half": "top",
+   "outs": 1,
+   "bases": "13",
+   "runs": 0,
+   "fielders": [
+    "RF"
+   ]
+  },
+  {
+   "type": "SB",
+   "inn": 9,
+   "half": "top",
+   "outs": 1,
+   "bases": "23",
+   "runs": 0,
+   "runner": "大畑 颯志"
+  },
+  {
+   "batter": "堀内 遥斗",
+   "type": "OUT",
+   "result_text": "三塁走者大石は走塁死 3アウト",
+   "inn": 9,
+   "half": "top",
+   "outs": 3,
+   "bases": "",
+   "runs": 0
+  },
+  {
+   "batter": "亀田 虎道",
+   "type": "OUT",
+   "result_text": "セカンドフライ 1アウト",
+   "inn": 9,
+   "half": "bottom",
+   "outs": 1,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "2B"
+   ]
+  },
+  {
+   "batter": "藤本 統守",
+   "type": "OUT",
+   "result_text": "外角のカットボールを打つもレフトフライ 2アウト",
+   "inn": 9,
+   "half": "bottom",
+   "outs": 2,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "LF"
+   ]
+  },
+  {
+   "sub": {
+    "team": "home",
+    "player": "隈部 虎丸",
+    "role": "PH"
+   }
+  },
+  {
+   "batter": "隈部 虎丸",
+   "type": "OUT",
+   "result_text": "一発出れば同点の場面でキャッチャーゴロ 3アウト",
+   "inn": 9,
+   "half": "bottom",
+   "outs": 3,
+   "bases": "",
+   "runs": 0,
+   "fielders": [
+    "C"
+   ]
+  }
+ ],
+ "players": {
+  "金本 優志": {
+   "order": 1,
+   "number": null
+  },
+  "小柳 祥太郎": {
+   "order": 2,
+   "number": null
+  },
+  "片出 憲志": {
+   "order": 3,
+   "number": null
+  },
+  "山崎 拓己": {
+   "order": 4,
+   "number": null
+  },
+  "大石 玲央斗": {
+   "order": 5,
+   "number": null
+  },
+  "宗廣 新": {
+   "order": 6,
+   "number": null
+  },
+  "藤本 玄岐": {
+   "order": 1,
+   "number": null
+  },
+  "堀内 悠海": {
+   "order": 2,
+   "number": null
+  },
+  "川北 健瑠": {
+   "order": 3,
+   "number": null
+  },
+  "寺田 陽大": {
+   "order": 4,
+   "number": null
+  },
+  "大畑 颯志": {
+   "order": 7,
+   "number": null
+  },
+  "堀内 遥斗": {
+   "order": 8,
+   "number": null
+  },
+  "後藤 歩武": {
+   "order": 9,
+   "number": null
+  },
+  "鎌田 梓暖": {
+   "order": 5,
+   "number": null
+  },
+  "野沢 栄之助": {
+   "order": 6,
+   "number": null
+  },
+  "亀田 虎道": {
+   "order": 7,
+   "number": null
+  },
+  "藤本 統守": {
+   "order": 8,
+   "number": null
+  },
+  "佐々木 琥央": {
+   "order": 9,
+   "number": null
+  },
+  "堀内 陽登": {
+   "order": 1,
+   "number": null
+  },
+  "隈部 虎丸": {
+   "order": 9,
+   "number": null
+  }
+ },
+ "final": {
+  "away": 3,
+  "home": 2
+ }
+}
