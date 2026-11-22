@@ -66,13 +66,25 @@ PROMPT = """あなたは野球の試合を伝えるライターです。下の�
 """
 
 
-def _claude(prompt, key):
-    body = json.dumps({"model": MODEL, "max_tokens": 1200, "messages": [{"role": "user", "content": prompt}]}).encode()
+def _call(prompt, key, max_tokens=3000):
+    body = json.dumps({"model": MODEL, "max_tokens": max_tokens, "messages": [{"role": "user", "content": prompt}]}).encode()
     req = urllib.request.Request(API, data=body, headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"})
-    with urllib.request.urlopen(req, timeout=120) as res:
-        out = json.loads(res.read().decode())
-    text = "".join(c.get("text", "") for c in out.get("content", []))
+    try:
+        with urllib.request.urlopen(req, timeout=180) as res:
+            out = json.loads(res.read().decode())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"HTTP {e.code}: {e.read().decode()[:300]}")
+    text = "".join(c.get("text", "") for c in out.get("content", []) if c.get("type") == "text")
+    if not text.strip():
+        raise RuntimeError(f"文章が返ってきませんでした（stop_reason={out.get('stop_reason')}, 種類={[c.get('type') for c in out.get('content', [])]}）")
+    return text
+
+
+def _claude(prompt, key):
+    text = _call(prompt, key)
     m = re.search(r"\{.*\}", text, re.S)
+    if not m:
+        raise RuntimeError(f"JSONが見つかりません: {text[:200]!r}")
     return json.loads(m.group(0))
 
 
@@ -109,11 +121,7 @@ def division_summary(div_name, games_lines):
     if not key:
         return None
     try:
-        body = json.dumps({"model": MODEL, "max_tokens": 800, "messages": [{"role": "user", "content": DIV_PROMPT.format(div=div_name, games="\n".join(games_lines))}]}).encode()
-        req = urllib.request.Request(API, data=body, headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"})
-        with urllib.request.urlopen(req, timeout=120) as res:
-            out = json.loads(res.read().decode())
-        return "".join(c.get("text", "") for c in out.get("content", [])).strip()
+        return _call(DIV_PROMPT.format(div=div_name, games="\n".join(games_lines)), key, 1500).strip()
     except Exception as e:  # noqa: BLE001
         print(f"[textgen] 大会まとめの作成に失敗: {e}")
         return None
