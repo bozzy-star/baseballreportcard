@@ -120,20 +120,20 @@
     "date": "2026-11-23",
     "home": "大阪商業大",
     "away": "筑波大",
-    "status": "scheduled"
+    "status": "final"
    },
    {
     "id": 2021053051,
     "date": "2026-11-23",
-    "home": "仙台大",
-    "away": "亜細亜大",
-    "status": "scheduled"
+    "home": "亜細亜大",
+    "away": "仙台大",
+    "status": "final"
    },
    {
     "id": 2021053052,
-    "date": "2026-11-24",
-    "home": "未定",
-    "away": "未定",
+    "date": "2026-11-25",
+    "home": "大阪商業大",
+    "away": "仙台大",
     "status": "scheduled"
    }
   ]
