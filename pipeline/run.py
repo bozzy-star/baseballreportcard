@@ -78,7 +78,7 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
         players.setdefault(team, {}).update(gr)
     cmeta = {"event_name": f"{comp['formal']} {DIV_JA[div]}", "short_name": comp["short"], "start": meta.get("time"), "end": meta.get("end")}
     (DATA / "cards").mkdir(exist_ok=True)
-    paths = make_cards(r, DATA / "cards", texts.get("card_summary"), cmeta)
+    card_paths = make_cards(r, DATA / "cards", texts.get("card_summary"), cmeta)
     try:
         ppaths = player_cards(r, DATA / "cards", cmeta, players)
     except Exception as e:  # 選手カードが作れなくても試合の処理は続ける
@@ -90,7 +90,7 @@ def process_game(comp_id, comp, dv, sg, reg, players, log):
                  label=label, src=f"data/games/{key}.json", score=score_line(r),
                  summary=texts.get("summary", ""), card_summary=texts.get("card_summary", ""), comment=texts.get("comment", ""),
                  post_text=textgen.post_text(comp, label, score_line(r), texts.get("post_lead", ""), r, url),
-                 text_by=texts.get("generated_by"), x_url=None, cards=[pathlib.Path(p).name for p in paths],
+                 text_by=texts.get("generated_by"), x_url=None, cards=[pathlib.Path(p).name for p in card_paths],
                  player_cards=[pathlib.Path(p).name for p in ppaths],
                  status="published", post_status="pending",
                  source={"site": "sportsnavi", "league": league, "id": sg["id"]},
