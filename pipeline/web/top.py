@@ -42,14 +42,14 @@ def hand(v, size, col=RED):
 def hero_section(m):
     """紙の通信簿の見本（いちばん新しい試合の上位選手）と見出し。"""
     # メインビジュアルの見本（架空の選手・NPBを想定した例）。実在の試合・選手ではない
-    sample_rows = [("赤間 陽向", "中", 9.5), ("波多野 迅", "投", 8.5), ("志摩 一輝", "遊", 7.0), ("鶴来 蒼真", "捕", 6.0)]
+    sample_rows = [("赤間 陽向", "中", 9.5, 9), ("波多野 迅", "投", 8.5, 18), ("志摩 一輝", "遊", 7.0, 6), ("鶴来 蒼真", "捕", 6.0, 27)]
     rows = "".join(
         f'<span style="display: grid; grid-template-columns: 1fr {56 if m else 64}px {30 if m else 36}px; align-items: center; height: {40 if m else 44}px; font-size: {14 if m else 15}px; border-bottom: 1px solid #D6DEE8">'
-        f'<span>{n}<span style="color: #5B6270; font-size: 12px">（{p_}）</span></span>'
+        f'<span style="display: flex; align-items: center; gap: 8px"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 22px; padding: 0 3px; box-sizing: border-box; border: 1px solid #1F2D4D; border-radius: 3px; font-size: 12px; font-weight: 700; color: #1F2D4D">{no}</span><span>{n}<span style="color: #5B6270; font-size: 12px">（{p_}）</span></span></span>'
         f'<span class="hand" style="font-size: {24 if m else 28}px; color: {RED}; text-align: right">{v:.1f}</span>'
         + (f'<img src="{U("img_hanamaru")}" alt="花丸" style="width: {26 if m else 30}px; height: {26 if m else 30}px; justify-self: end">' if v >= B.HANAMARU_AT
            else f'<span style="justify-self: end; display: flex">{B.face(v, 24 if m else 26)}</span>')
-        + '</span>' for n, p_, v in sample_rows)
+        + '</span>' for n, p_, v, no in sample_rows)
     sample = (f'<div aria-label="通信簿の見本（架空の選手）" style="display: flex; flex-direction: column; gap: 12px; width: {"100%" if m else "440px"}; box-sizing: border-box; flex: none; '
               f'background-color: #FFFDF7; border: 1px solid #CFC4A8; box-shadow: 6px 6px 0 #E8DFC9; padding: {"18px 20px" if m else "26px 30px"}; color: #222831">'
               f'<span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 2px solid #1F2D4D; padding-bottom: 8px">'
