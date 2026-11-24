@@ -3,6 +3,8 @@
   python3 pipeline/web/site.py [出力先]
 """
 import json, os, re, shutil, subprocess, sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import theme  # noqa: E402
 import datetime as _dt
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -105,7 +107,7 @@ summary::-webkit-details-marker{{display:none}}
 </html>
 """
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(html)
+    out.write_text(theme.paper(html))
 
 
 REDIRECTS = {}

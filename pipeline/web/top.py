@@ -40,25 +40,44 @@ def hand(v, size, col=RED):
 
 
 def hero_section(m):
-    pad = "22px 20px 30px" if m else "56px 24px"
-    stamp = (f'<div class="paper" style="position: relative; width: {340 if m else 420}px; max-width: 100%; box-sizing: border-box; padding: 18px 20px 14px; border-radius: 6px; transform: rotate(-3deg); box-shadow: 0 10px 24px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 14px">'
-             f'<span style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; flex: 1 1 auto">'
-             + "".join(f'<span class="hand" style="font-size: {30 if m else 38}px; color: {RED}; border-bottom: 2px solid {RED}">{v}</span>' for v in ("6.5", "7.0", "8.5"))
-             + f'</span><span style="position: relative; width: {64 if m else 78}px; height: {64 if m else 78}px; flex: none">{B.HANAMARU.format(w=64 if m else 78, t=0).replace("opacity: 0.35", "opacity: 1")}</span></div>')
-    h1 = f'<h1 style="margin: 0; font-size: {30 if m else 52}px; font-weight: 900; line-height: 1.35; color: #FFFFFF; text-shadow: 0 3px 0 rgba(0,0,0,0.3)"><span class="marker">全試合、全選手の</span><br><span class="marker">活躍を採点！</span></h1>'
-    lead = "<span style=\"display: inline-block\">スコアブックに残らない</span><span style=\"display: inline-block\">「効いた一打」を、点数に。</span><br><span style=\"display: inline-block\">試合ごとに、</span><span style=\"display: inline-block\">全選手の試合ごとの貢献度。</span>"
+    """紙の通信簿の見本（いちばん新しい試合の上位選手）と見出し。"""
+    sample = ""
+    pub = D.published()
+    if pub:
+        g = pub[-1]
+        r, _, _ = D.result(g["key"])
+        top4 = sorted(r["ratings"], key=lambda x: (-x["score"], -x["raw_score"]))[:4]
+        team = top4[0]["team"] if top4 else ""
+        rows = "".join(
+            f'<span style="display: grid; grid-template-columns: 1fr {56 if m else 64}px {30 if m else 36}px; align-items: center; height: {38 if m else 40}px; font-size: {14 if m else 15}px">'
+            f'<span>{x["player"]}<span style="color: #5B6270; font-size: 12px">（{x["pos"]}）</span></span>'
+            f'<span class="hand" style="font-size: {24 if m else 28}px; color: {RED}; text-align: right">{x["score"]:.1f}</span>'
+            + (f'<img src="{U("img_hanamaru")}" alt="花丸" style="width: {26 if m else 30}px; height: {26 if m else 30}px; justify-self: end">' if x["score"] >= B.HANAMARU_AT
+               else f'<span style="justify-self: end">{B.face(x["score"], 24 if m else 26)}</span>')
+            + '</span>' for x in top4)
+        c = (top4[0].get("comment") or "").split("。")[0] if top4 else ""
+        sample = (f'<a href="{U("game:" + g["key"])}" style="display: flex; flex-direction: column; gap: 12px; width: {"100%" if m else "440px"}; box-sizing: border-box; flex: none; '
+                  f'background-color: #FFFDF7; border: 1px solid #CFC4A8; box-shadow: 6px 6px 0 #E8DFC9; padding: {"18px 20px" if m else "26px 30px"}; text-decoration: none; color: #222831">'
+                  f'<span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 2px solid #1F2D4D; padding-bottom: 8px">'
+                  f'<span style="font-family: \'Shippori Mincho\', serif; font-weight: 800; font-size: {18 if m else 22}px; color: #1F2D4D; letter-spacing: 0.3em">通信簿</span>'
+                  f'<span style="font-size: 12px; color: #5B6270">{D.score_line(g["key"])}</span></span>'
+                  f'<span class="paper" style="display: flex; flex-direction: column; background-color: transparent">{rows}</span>'
+                  + (f'<span class="hand" style="font-size: {15 if m else 17}px; line-height: 1.6; color: {RED}">担任より：{top4[0]["player"]}さん、{c}。</span>' if c else "")
+                  + '</a>')
+    h1 = (f'<h1 style="margin: 0; font-size: {30 if m else 50}px; font-weight: 800; line-height: 1.35; color: #1F2D4D">'
+          '一試合ごとに、<br>全選手へ通信簿を。</h1>')
+    lead = (f'<p style="margin: 0; font-size: {15 if m else 17}px; line-height: 1.9; color: #3D4552">'
+            'スコアブックには残らない「効いた一打」を、勝利確率の動きで採点します。10点満点、6.0点が及第点。担任からの一言つき。</p>')
+    kicker = f'<p style="margin: 0; font-size: 13px; letter-spacing: 0.2em; color: {RED}; font-weight: 700">全試合・全選手</p>'
+    btns = (f'<span style="display: flex; gap: 12px; flex-wrap: wrap"><a href="{U("rules")}" style="display: inline-flex; align-items: center; height: 46px; padding: 0 22px; '
+            f'border: 1.5px solid #1F2D4D; color: #1F2D4D; text-decoration: none; font-weight: 700; border-radius: 4px; background-color: transparent">採点のしくみ</a></span>')
     if m:
-        return f"""<section aria-label="ベースボール通信簿とは" style="background-color: #0E1E40">
-    <div style="position: relative; height: 420px; background-image: url('{HERO}'); background-size: auto 100%; background-position: 100% center; background-repeat: no-repeat; border-bottom: 3px solid {RED}">
-      <span aria-hidden="true" style="position: absolute; inset: 0; background-image: linear-gradient(180deg, rgba(11,26,54,0.8) 0, rgba(11,26,54,0) 32%, rgba(11,26,54,0) 62%, rgba(11,26,54,0.85) 100%)"></span>
-      <div style="position: relative; height: 100%; box-sizing: border-box; padding: {pad}; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center">{h1}{stamp}</div>
-    </div>
-    <div style="padding: 20px 20px 28px; text-align: center"><p style="margin: 0; font-size: 15px; font-weight: 500; color: #E6ECF6">{lead}</p></div>
+        return f"""<section aria-label="ベースボール通信簿とは" style="border-bottom: 1px solid #D9CFB8">
+    <div style="padding: 30px 20px 30px; display: flex; flex-direction: column; gap: 16px">{kicker}{h1}{lead}{sample}{btns}</div>
   </section>"""
-    return f"""<section aria-label="ベースボール通信簿とは" style="position: relative; overflow: hidden; background-color: #0E1E40; background-image: url('{HERO}'); background-size: cover; background-position: right center">
-    <span aria-hidden="true" style="position: absolute; inset: 0; background-image: linear-gradient(90deg, rgba(11,26,54,0.85) 0, rgba(11,26,54,0.55) 38%, rgba(11,26,54,0) 62%)"></span>
-    <div style="position: relative; max-width: 1120px; margin: 0 auto; padding: {pad}; display: flex; flex-direction: column; align-items: flex-start; gap: 22px; min-height: 400px; justify-content: center">
-      {h1}<p style="margin: 0; max-width: 560px; font-size: 18px; font-weight: 500; color: #E6ECF6">{lead}</p>{stamp}
+    return f"""<section aria-label="ベースボール通信簿とは" style="border-bottom: 1px solid #D9CFB8">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px 56px; display: flex; gap: 56px; align-items: center">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 18px">{kicker}{h1}{lead}{btns}</div>{sample}
     </div>
   </section>"""
 
