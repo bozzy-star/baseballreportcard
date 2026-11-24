@@ -41,29 +41,24 @@ def hand(v, size, col=RED):
 
 def hero_section(m):
     """紙の通信簿の見本（いちばん新しい試合の上位選手）と見出し。"""
-    sample = ""
-    pub = D.published()
-    if pub:
-        g = pub[-1]
-        r, _, _ = D.result(g["key"])
-        top4 = sorted(r["ratings"], key=lambda x: (-x["score"], -x["raw_score"]))[:4]
-        team = top4[0]["team"] if top4 else ""
-        rows = "".join(
-            f'<span style="display: grid; grid-template-columns: 1fr {56 if m else 64}px {30 if m else 36}px; align-items: center; height: {38 if m else 40}px; font-size: {14 if m else 15}px">'
-            f'<span>{x["player"]}<span style="color: #5B6270; font-size: 12px">（{x["pos"]}）</span></span>'
-            f'<span class="hand" style="font-size: {24 if m else 28}px; color: {RED}; text-align: right">{x["score"]:.1f}</span>'
-            + (f'<img src="{U("img_hanamaru")}" alt="花丸" style="width: {26 if m else 30}px; height: {26 if m else 30}px; justify-self: end">' if x["score"] >= B.HANAMARU_AT
-               else f'<span style="justify-self: end">{B.face(x["score"], 24 if m else 26)}</span>')
-            + '</span>' for x in top4)
-        c = (top4[0].get("comment") or "").split("。")[0] if top4 else ""
-        sample = (f'<a href="{U("game:" + g["key"])}" style="display: flex; flex-direction: column; gap: 12px; width: {"100%" if m else "440px"}; box-sizing: border-box; flex: none; '
-                  f'background-color: #FFFDF7; border: 1px solid #CFC4A8; box-shadow: 6px 6px 0 #E8DFC9; padding: {"18px 20px" if m else "26px 30px"}; text-decoration: none; color: #222831">'
-                  f'<span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 2px solid #1F2D4D; padding-bottom: 8px">'
-                  f'<span style="font-family: \'Shippori Mincho\', serif; font-weight: 800; font-size: {18 if m else 22}px; color: #1F2D4D; letter-spacing: 0.3em">通信簿</span>'
-                  f'<span style="font-size: 12px; color: #5B6270">{D.score_line(g["key"])}</span></span>'
-                  f'<span class="paper" style="display: flex; flex-direction: column; background-color: transparent">{rows}</span>'
-                  + (f'<span class="hand" style="font-size: {15 if m else 17}px; line-height: 1.6; color: {RED}">担任より：{top4[0]["player"]}さん、{c}。</span>' if c else "")
-                  + '</a>')
+    # メインビジュアルの見本（架空の選手・NPBを想定した例）。実在の試合・選手ではない
+    sample_rows = [("赤間 陽向", "中", 9.5), ("波多野 迅", "投", 8.5), ("志摩 一輝", "遊", 7.0), ("鶴来 蒼真", "捕", 6.0)]
+    rows = "".join(
+        f'<span style="display: grid; grid-template-columns: 1fr {56 if m else 64}px {30 if m else 36}px; align-items: center; height: {40 if m else 44}px; font-size: {14 if m else 15}px; border-bottom: 1px solid #D6DEE8">'
+        f'<span>{n}<span style="color: #5B6270; font-size: 12px">（{p_}）</span></span>'
+        f'<span class="hand" style="font-size: {24 if m else 28}px; color: {RED}; text-align: right">{v:.1f}</span>'
+        + (f'<img src="{U("img_hanamaru")}" alt="花丸" style="width: {26 if m else 30}px; height: {26 if m else 30}px; justify-self: end">' if v >= B.HANAMARU_AT
+           else f'<span style="justify-self: end; display: flex">{B.face(v, 24 if m else 26)}</span>')
+        + '</span>' for n, p_, v in sample_rows)
+    sample = (f'<div aria-label="通信簿の見本（架空の選手）" style="display: flex; flex-direction: column; gap: 12px; width: {"100%" if m else "440px"}; box-sizing: border-box; flex: none; '
+              f'background-color: #FFFDF7; border: 1px solid #CFC4A8; box-shadow: 6px 6px 0 #E8DFC9; padding: {"18px 20px" if m else "26px 30px"}; color: #222831">'
+              f'<span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 2px solid #1F2D4D; padding-bottom: 8px">'
+              f'<span style="font-family: \'Shippori Mincho\', serif; font-weight: 800; font-size: {18 if m else 22}px; color: #1F2D4D; letter-spacing: 0.3em">通信簿</span>'
+              f'<span style="font-size: 12px; color: #5B6270"><span style="border: 1px solid #5B6270; border-radius: 3px; padding: 0 5px; margin-right: 6px">例</span>広島 4-3 横浜</span></span>'
+              f'<span style="display: flex; flex-direction: column">{rows}</span>'
+              f'<span class="hand" style="font-size: {15 if m else 17}px; line-height: 1.6; color: {RED}">担任より：赤間 陽向さん、9回の逆転打は文句なしの花丸です。</span>'
+              f'<span style="font-size: 11px; color: #5B6270">※ 見本です。選手名は架空のものです。</span>'
+              '</div>')
     h1 = (f'<h1 style="margin: 0; font-size: {30 if m else 50}px; font-weight: 800; line-height: 1.35; color: #1F2D4D">'
           '一試合ごとに、<br>全選手へ通信簿を。</h1>')
     lead = (f'<p style="margin: 0; font-size: {15 if m else 17}px; line-height: 1.9; color: #3D4552">'
