@@ -22,6 +22,9 @@ on:
       request:
         description: "書き直しの注文"
         default: ""
+      late:
+        description: "遅い時間の再確認として動かす（true / 空）"
+        default: ""
 
 permissions:
   contents: write
@@ -64,7 +67,7 @@ jobs:
             "37 9 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
             "7 11 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
             "7 13 * * *") echo "slot=univ" >> $GITHUB_OUTPUT; echo "late=--late" >> $GITHUB_OUTPUT ;;
-            *) echo "slot=${{ github.event.inputs.slot || 'all' }}" >> $GITHUB_OUTPUT; echo "late=" >> $GITHUB_OUTPUT ;;
+            *) echo "slot=${{ github.event.inputs.slot || 'all' }}" >> $GITHUB_OUTPUT; if [ "${{ github.event.inputs.late }}" = "true" ]; then echo "late=--late" >> $GITHUB_OUTPUT; else echo "late=" >> $GITHUB_OUTPUT; fi ;;
           esac
 
       - name: 試合の取得と採点

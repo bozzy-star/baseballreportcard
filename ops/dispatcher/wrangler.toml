@@ -1,0 +1,9 @@
+# ダッシュボードで作る場合は不要。コマンドで deploy する場合の設定。
+name = "brc-dispatcher"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[triggers]
+# UTC。JST = +9時間
+# 14:33 / 16:07・17:07・20:07・22:07 / 18:37
+crons = ["33 5 * * *", "7 7,8,11,13 * * *", "37 9 * * *"]
