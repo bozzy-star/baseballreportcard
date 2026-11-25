@@ -389,7 +389,7 @@ def header(mobile):
     logo = 44 if mobile else 52
     nav = (f'<details style="position: relative"><summary aria-label="メニューを開く" style="list-style: none; width: 44px; height: 44px; border-radius: 10px; border: 2px solid #3D5C93; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>'
            f'<nav aria-label="メインメニュー" style="position: absolute; right: 0; top: 52px; z-index: 20; display: flex; flex-direction: column; min-width: 200px; background-color: #0B1A36; border: 2px solid #3D5C93; border-radius: 10px; padding: 6px">'
-           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournaments"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules")))
+           + "".join(f'<a href="{U(k)}" style="padding: 12px 14px; color: #FFFFFF; text-decoration: none; font-weight: 700">{t}</a>' for t, k in (("トップ", "top"), ("大会", "tournaments"), ("選手一覧", "players"), ("日付ごとの試合", "archive"), ("採点のしくみ", "rules"), ("通信簿について", "about")))
            + '<a href="https://x.com/BaseBalltannin" style="padding: 12px 14px; color: #F3B7BA; text-decoration: none; font-weight: 900">Xでフォロー</a></nav></details>'
            if mobile else
            '<nav aria-label="メインメニュー" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px">'
@@ -414,7 +414,7 @@ def footer(mobile):
     return f"""  <footer style="background-color: #081327; border-top: 4px solid #D7262E">
     <div style="max-width: 1120px; margin: 0 auto; padding: {'28px 16px 40px' if mobile else '36px 24px 48px'}; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #9FB3D6">
       <span style="font-size: 17px; font-weight: 900; color: #FFFFFF">ベースボール<span style="border-bottom: 3px solid #D7262E">通信簿</span></span>
-      <span>運営：1000%　<a href="{U('privacy')}" style="color: #C9D6EA">プライバシーポリシー</a></span>
+      <span>運営：1000%　<a href="{U('about')}" style="color: #C9D6EA">ベースボール通信簿について</a>　<a href="{U('privacy')}" style="color: #C9D6EA">プライバシーポリシー</a></span>
       <span>勝利確率と採点は、簡易モデルによる試算です。選手の評価・実力を決めるものではありません。</span>
       <span>© 2026 1000%</span>
     </div>

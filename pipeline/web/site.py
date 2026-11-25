@@ -44,7 +44,7 @@ def urls(extra=None):
     comp = COMPS[cid]
     u = {"top": "index.html", "tournaments": "tournaments/index.html", "family": paths.family_page(comp),
          "tournament": paths.comp_page(comp), "archive": paths.comp_page(comp) + "#archive", "players": paths.players_page(comp),
-         "rules": "scoring.html", "privacy": "privacy.html", "img_batter": "assets/batter-navy.png", "img_pitcher": "assets/pitcher-navy.png",
+         "rules": "scoring.html", "privacy": "privacy.html", "about": "about.html", "img_batter": "assets/batter-navy.png", "img_pitcher": "assets/pitcher-navy.png",
          "img_hero": "assets/hero-stadium.jpg", "img_hanamaru": "assets/badges/hanamaru.png"}
     for g in PUB:
         c = COMPS[g["comp"]]
@@ -175,6 +175,9 @@ run("players.py", ["hubs"], "tournaments/index.html")
 for m in json.loads((TMP / "hubs" / "manifest.json").read_text(encoding="utf-8")):
     merge(f"hubs/{m['id']}.pc.dc.html", f"hubs/{m['id']}.sp.dc.html", m["page"], m["title"], m["desc"])
 
+run("about.py", [], "about.html")
+merge("About.dc.html", "AboutMobile.dc.html", "about.html", "ベースボール通信簿について｜ベースボール通信簿",
+      "ベースボール通信簿を作った理由、やりたいこと、対象とする試合、通信簿の読み方をまとめています。")
 run("privacy.py", [], "privacy.html")
 merge("Privacy.dc.html", "PrivacyMobile.dc.html", "privacy.html", "プライバシーポリシー｜ベースボール通信簿",
       "ベースボール通信簿のプライバシーポリシー（アクセス解析と外部への情報送信について）。")
