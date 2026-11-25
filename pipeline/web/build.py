@@ -171,7 +171,7 @@ def img_url(name):
 def face(score, size=18):
     """点数に応じた顔マーク（7.0以上＝にっこり、6.0〜6.5＝ふつう、6.0未満＝こまり顔）。"""
     name = "face-good" if score >= 7.0 else ("face-ok" if score >= 6.0 else "face-bad")
-    alt = {"face-good": "よくできました", "face-ok": "及第点", "face-bad": "もう少し"}[name]
+    alt = {"face-good": "7.0点以上", "face-ok": "6.0〜6.5点", "face-bad": "6.0点未満"}[name]
     return f'<img src="{img_url(name)}" alt="{alt}" title="{alt}" style="width: {size}px; height: {size}px; vertical-align: middle; flex: none">'
 
 
@@ -566,7 +566,8 @@ def team_table(side, mobile):
             pos = pos_chain(x)
             order = f'{x["order"]}番・' if x["order"] and kind == "bat" else ""
             cm = esc(x['comment'])
-            for band in ("文句なしの花丸です。", "よくできました。", "及第点です。", "もう少し。", "今日は試練の日。"):
+            from brc.engine import BAND_OPENERS
+            for band in BAND_OPENERS:
                 if cm.startswith(band):
                     cm = cm[len(band):]
             for tail in ("次の試合でも主役を。", "次はもうひと押しを。", "次に期待しています。", "切り替えて次へ。"):

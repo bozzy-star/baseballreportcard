@@ -7,6 +7,10 @@ import math
 from collections import defaultdict
 from .winprob import WinProbModel, bases_from_str
 
+BANDS_WIN = ("試合を決めた", "勝利に貢献した", "役目を果たした", "あと一歩でした", "今日は試練の日")
+BANDS_LOSE = ("たいへんよくできました", "よくできました", "できました", "あと一歩", "今日は試練の日")
+BAND_OPENERS = tuple(w + "。" for w in BANDS_WIN + BANDS_LOSE) + ("文句なしの花丸です。", "及第点です。", "もう少し。")
+
 POSITIONS = ["P", "C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "DH"]
 POS_JA = {"P": "投", "C": "捕", "1B": "一", "2B": "二", "3B": "三", "SS": "遊",
           "LF": "左", "CF": "中", "RF": "右", "DH": "指"}
@@ -361,7 +365,7 @@ class Game:
         raw = self.rules["base"] + self.rules["coef"] * self.wpa[name] + self.bonus[name]
         return min(self.rules["cap"], round_step(raw, self.rules["step"]))
 
-    def comment(self, name, score):
+    def comment(self, name, score, won=None):
         """担任からの一言。点数の帯ごとの書き出しに、その選手の具体的なプレーを添える。"""
         agg = {}
         for v, d in self.plays[name]:
@@ -379,17 +383,7 @@ class Game:
             s_ = self.pit[name]
             ip = (f"{s_['outs'] // 3}回" + ("" if s_["outs"] % 3 == 0 else f"{s_['outs'] % 3}/3")) if s_["outs"] >= 3 else f"{s_['outs']}/3回"
             pit = f"{ip}を{s_['R']}失点" + (f"、{s_['K']}奪三振" if s_["K"] else "")
-        out = []
-        if score >= 8.5:
-            out.append("文句なしの花丸です。")
-        elif score >= 7.0:
-            out.append("よくできました。")
-        elif score >= 6.0:
-            out.append("及第点です。")
-        elif score >= 5.0:
-            out.append("もう少し。")
-        else:
-            out.append("今日は試練の日。")
+        out = [band_word(score, won) + "。"]
         if pit:
             out.append(f"{pit}。")
         if score >= 6.0:
@@ -464,7 +458,7 @@ class Game:
                 "pitcher": is_pitcher, "wpa": round(self.wpa[name], 4),
                 "bonus": self.bonus[name], "score": sc,
                 "raw_score": round_step(self.rules["base"] + self.rules["coef"] * self.wpa[name] + self.bonus[name],
-                                        self.rules["step"]), "comment": self.comment(name, sc),
+                                        self.rules["step"]), "comment": self.comment(name, sc, won=(winner == p["team"]) if winner else None),
                 "best_play": max(self.plays[name], default=(0, ""))[1],
                 "reasons": self.reasons(name),
                 "reasons_all": self.reasons(name, n=4),
@@ -494,6 +488,14 @@ class Game:
             "warnings": self.warnings,
             "rules_version": "2026-11-19 pilot",
         }
+
+
+def band_word(score, won=None):
+    """点数の帯の呼び名。勝ったチームは称号、負けたチーム（と引き分け）は通信簿の言葉。"""
+    i = 0 if score >= 8.5 else 1 if score >= 7.0 else 2 if score >= 6.0 else 3 if score >= 5.0 else 4
+    if won:
+        return BANDS_WIN[i]
+    return BANDS_LOSE[i]
 
 
 def score_game(data, rules=None):

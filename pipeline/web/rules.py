@@ -23,13 +23,17 @@ def p(t, mobile, extra=""):
 
 def scale(mobile):
     # (範囲, 一言, どんな選手か, 勝利確率の目安, 出現率, 色見本)
-    bands = [("8.5〜", "文句なしの花丸", "その試合の勝ち負けを決めた選手。くわしくは下の「8.5点以上はこんな選手」へ。", "＋19%〜", "約7%", "9.0"),
-             ("7.0〜8.0", "よくできました", "勝ちに大きく貢献した選手。先制や中押しのタイムリー、先発としてしっかり試合を作った投球など。MVPの基準もここからです。", "＋6〜19%", "約15%", "7.5"),
-             ("6.0〜6.5", "及第点", "役目は果たした選手。大きな失敗がなく、勝負どころで少しプラスを積んだ。点差が開いた場面のヒットもここに入りやすいです。", "−2〜＋6%", "約39%", "6.0"),
-             ("5.0〜5.5", "もう少し", "やや足を引っぱった選手。チャンスでの凡退や、終盤の失点などで、勝利確率を少し下げました。", "−10〜−2%", "約26%", "5.0"),
-             ("〜4.5", "今日は試練の日", "大きく流れを渡した選手。勝負どころでの併殺打、逆転を許す被打、決勝点につながるエラーなど。", "−10%〜", "約14%", "4.0")]
+    bands = [("8.5〜", "試合を決めた", "たいへんよくできました", "その試合の勝ち負けを決めた選手。くわしくは下の「8.5点以上はこんな選手」へ。", "＋19%〜", "約7%", "9.0"),
+             ("7.0〜8.0", "勝利に貢献した", "よくできました", "勝ちに大きく貢献した選手。先制や中押しのタイムリー、先発としてしっかり試合を作った投球など。MVPの基準もここからです。", "＋6〜19%", "約15%", "7.5"),
+             ("6.0〜6.5", "役目を果たした", "できました", "役目は果たした選手。大きな失敗がなく、勝負どころで少しプラスを積んだ。点差が開いた場面のヒットもここに入りやすいです。", "−2〜＋6%", "約39%", "6.0"),
+             ("5.0〜5.5", "あと一歩でした", "あと一歩", "あと一歩だった選手。チャンスであと一本が出なかったり、終盤に失点したりして、勝利確率を少し相手に渡しました。", "−10〜−2%", "約26%", "5.0"),
+             ("〜4.5", "今日は試練の日", "今日は試練の日", "大きく流れを渡した選手。勝負どころでの併殺打、逆転を許す被打、決勝点につながるエラーなど。", "−10%〜", "約14%", "4.0")]
     rows = ""
-    for rng, word, who, w, freq, sample in bands:
+    for rng, word_w, word_l, who, w, freq, sample in bands:
+        mark = (f'<img src="{B.img_url("hanamaru")}" alt="花丸" style="width: 26px; height: 26px; vertical-align: middle">' if float(sample) >= 8.5 else "") + B.face(float(sample), 24)
+        word = (f'<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px">{mark}'
+                f'<span><span style="font-size: 11px; font-weight: 700; color: {SUB}">勝ったチーム</span> {word_w}</span>'
+                + (f'<span><span style="font-size: 11px; font-weight: 700; color: {SUB}">負けたチーム</span> {word_l}</span>' if word_l != word_w else "") + '</span>')
         col = RED if float(sample) >= 6 else "#3D5C93"
         tag = lambda t: f'<span style="font-size: 12px; font-weight: 700; color: {SUB}; border: 1px solid {LINE}; border-radius: 999px; padding: 1px 10px; white-space: nowrap">{t}</span>'
         rows += f"""<div style="display: flex; align-items: flex-start; gap: {12 if mobile else 18}px; padding: 14px 0; border-bottom: 1px solid {LINE}">
@@ -38,7 +42,7 @@ def scale(mobile):
             <span style="font-size: {13 if mobile else 14}px; line-height: 1.8">{who}</span>
             <span style="display: flex; flex-wrap: wrap; gap: 6px">{tag("勝利確率 " + w)}{tag("出る割合 " + freq)}</span></span>
         </div>"""
-    return card(h3("点数の目安", mobile) + p("6.0点が及第点です。0.5点刻みで、上限は10点。下限はありません。点数の帯ごとに、担任からの一言が変わります。", mobile)
+    return card(h3("点数の目安", mobile) + p("6.0点が及第点です。0.5点刻みで、上限は10点。下限はありません。点数の帯ごとに呼び名と顔マークがあり、担任からの一言の書き出しになります。呼び名は、勝ったチームと負けたチームで変わります。", mobile)
                 + f'<div style="margin-top: 8px">{rows}</div>'
                 + p("「勝利確率」は、その選手が試合を通して動かした勝利確率の合計の目安です（ファインプレー・好走塁の加点を除く）。「出る割合」は明治神宮大会2026の12試合・のべ327人の採点から出しています。", mobile, f"; margin-top: 12px; font-size: 13px; color: {SUB}"),
                 mobile, id_="r-scale")
