@@ -25,6 +25,21 @@ IS_TODAY = D.today_date() == REAL_TODAY
 LATEST = "今日" if IS_TODAY else "最新の試合"
 
 
+def lk(path, text, style=None):
+    """選手・学校ページへのリンク（ページがなければ文字だけ）。"""
+    if not path:
+        return text
+    return f'<a href="{B.R(path)}" style="{style or B._LINK}">{text}</a>'
+
+
+def link_teams(line, teams):
+    for t, path in sorted(teams.items(), key=lambda kv: -len(kv[0])):
+        line = line.replace(t, "\0" + t + "\1", 1)
+    for t, path in teams.items():
+        line = line.replace("\0" + t + "\1", lk(path, t), 1)
+    return line
+
+
 def _champions():
     out = []
     for g in D.published():
@@ -33,7 +48,7 @@ def _champions():
         lab = g.get("label", "")
         if "決勝" in lab and "準決勝" not in lab:
             r, _, _ = D.result(g["key"])
-            out.append((lab.split(" ")[0], r["final"]["winner"]))
+            out.append((lab.split(" ")[0], r["final"]["winner"], D.team_path(g, r["final"]["winner"])))
     return out
 
 
@@ -115,20 +130,21 @@ def hero_section(m):
 
 def game_cards(m):
     out = []
-    for div, card, state, fm, pm, link in TODAY_GAMES:
+    for div, card, state, fm, pm, link, teams in TODAY_GAMES:
         rows = []
         if fm or pm:
             for lab, v in (("野手MVP", fm), ("投手MVP", pm)):
-                right = (f'<span>{v[0]}</span>{hand(f"{v[1]:.1f}", 26)}' if v else f'<span style="color: {SUB}">該当者なし</span>')
+                right = (f'<span>{lk(v[2], v[0])}</span>{hand(f"{v[1]:.1f}", 26)}' if v else f'<span style="color: {SUB}">該当者なし</span>')
                 rows.append(f'<span style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 14px"><span style="font-weight: 700">{lab}</span><span style="display: flex; align-items: baseline; gap: 8px">{right}</span></span>')
         else:
             rows.append(f'<span style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 700">通信簿</span><span style="color: {SUB}">試合終了後に公開</span></span>')
-        tag = "a" if link else "div"
-        href = f' href="{U(link)}"' if link else ""
+        tag = "div"
+        href = ""
+        more = (f'<a href="{U(link)}" style="font-size: 13px; font-weight: 700; color: {RED}; text-decoration: none; align-self: flex-end">通信簿を見る →</a>' if link else "")
         out.append(f'<{tag}{href} class="paper" style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: 8px; text-decoration: none; color: {INK}; box-shadow: 0 6px 0 rgba(0,0,0,0.25)">'
                    f'<span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 700"><span style="color: {SUB}">{div}</span><span style="color: {RED}">{state}</span></span>'
-                   f'<span style="font-size: {19 if m else 20}px; font-weight: 900; line-height: 1.3">{card}</span>'
-                   f'<span style="display: flex; flex-direction: column; gap: 4px; border-top: 2px dashed {LINE}; padding-top: 8px">{"".join(rows)}</span></{tag}>')
+                   f'<span style="font-size: {19 if m else 20}px; font-weight: 900; line-height: 1.3">{link_teams(card, teams)}</span>'
+                   f'<span style="display: flex; flex-direction: column; gap: 4px; border-top: 2px dashed {LINE}; padding-top: 8px">{"".join(rows)}</span>{more}</{tag}>')
     cols = "1fr" if m else "repeat(auto-fit, minmax(240px, 1fr))"
     return f'<div style="display: grid; grid-template-columns: {cols}; gap: 16px">{"".join(out)}</div>'
 
@@ -143,8 +159,8 @@ def hero_card(h, m):
               <img src="{img}" alt="" aria-hidden="true" style="width: {72 if m else 96}px; height: auto; flex: none">
               <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
                 <span style="font-size: 13px; font-weight: 900; color: {RED}">{h['kind']}</span>
-                <span style="font-size: {24 if m else 28}px; font-weight: 900; line-height: 1.25">{h['name']}</span>
-                <span style="font-size: 13px; color: {SUB}">{h['meta']}</span>
+                <span style="font-size: {24 if m else 28}px; font-weight: 900; line-height: 1.25">{lk(h.get('page'), h['name'])}</span>
+                <span style="font-size: 13px; color: {SUB}">{h['meta'].replace(h['team'], lk(h.get('team_page'), h['team']), 1) if h.get('team') else h['meta']}</span>
                 <span style="font-size: 13px; font-weight: 700">{h['play']}</span>
               </span>
               <span style="display: flex; flex-direction: column; align-items: center; gap: 2px; flex: none; position: relative; min-width: {84 if m else 104}px">
@@ -181,10 +197,10 @@ def big_play(m):
         return ""
     return f"""<section aria-label="今日いちばん試合を動かしたプレー" style="display: flex; flex-direction: column; gap: 18px">
       {h2('試合を動かしたプレー' if m else (LATEST + ('' if IS_TODAY else 'で') + 'いちばん試合を動かしたプレー'), m)}
-      <a href="{U(b['link'])}" style="display: flex; flex-direction: column; gap: 14px; padding: {18 if m else 26}px; background-color: #0A1222; border: 6px solid #3D5C93; border-radius: 10px; text-decoration: none; color: #FFFFFF">
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: {18 if m else 26}px; background-color: #0A1222; border: 6px solid #3D5C93; border-radius: 10px; color: #FFFFFF">
         <span style="font-size: 13px; color: #9FB3D6">{b['game']}</span>
         <span style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
-          <span style="font-size: {20 if m else 26}px; font-weight: 900">{b['title']}</span>
+          <span style="font-size: {20 if m else 26}px; font-weight: 900">{b['title'].replace(b['who'], lk(b.get('who_page'), b['who']), 1) if b.get('who') else b['title']}</span>
           <span style="font-size: {44 if m else 60}px; font-weight: 900; color: #FFD23F">+{b['delta']}%</span>
         </span>
         <span style="display: flex; flex-direction: column; gap: 6px">
@@ -194,7 +210,8 @@ def big_play(m):
             <span style="position: absolute; left: {b['before']}%; top: 0; bottom: 0; width: {b['delta']}%; background-color: #FFD23F"></span>
           </span>
         </span>
-      </a>
+        <a href="{U(b['link'])}" style="font-size: 13px; font-weight: 700; color: #FFD23F; text-decoration: none; align-self: flex-end">この試合の通信簿へ →</a>
+      </div>
     </section>"""
 
 
@@ -257,7 +274,7 @@ def today_section(m):
     if CHAMPS:
         champ = ('<div style="display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: baseline; padding: 14px 18px; border: 2px solid #D7262E; border-radius: 6px; background-color: #FFFFFF">'
                  f'<span style="font-weight: 900; color: #D7262E; letter-spacing: 0.1em">{TOURNEY_SHORT} 最終結果</span>'
-                 + "".join(f'<span style="color: #14294F"><span style="font-size: 13px; color: #5B6B86">{d_}　優勝</span>　<b style="font-size: {18 if m else 20}px">{w}</b></span>' for d_, w in CHAMPS)
+                 + "".join(f'<span style="color: #14294F"><span style="font-size: 13px; color: #5B6B86">{d_}　優勝</span>　<b style="font-size: {18 if m else 20}px">{lk(tp, w)}</b></span>' for d_, w, tp in CHAMPS)
                  + '</div>')
     if IS_TODAY:
         return f"""<section aria-label="今日の試合" style="display: flex; flex-direction: column; gap: 18px">
@@ -313,11 +330,11 @@ def tourney_page(m):
         lc = "".join(f"""<div class="paper" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; color: {INK}; box-shadow: 0 4px 0 rgba(0,0,0,0.25)">
             <span class="hand" style="flex: none; width: 34px; font-size: 30px; color: {RED}; line-height: 1; text-align: center">{i + 1}</span>
             <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
-              <span style="font-size: {17 if m else 19}px; font-weight: 900">{nm}<span style="font-size: 13px; font-weight: 700; color: {SUB}">（{gp}）</span></span>
-              <span style="font-size: 13px; color: {SUB}">{tm}　{len(sc)}試合の採点：{"／".join(f"{v:.1f}" + ("（上限突破）" if v > 10 else "") for v in sc)}</span>
+              <span style="font-size: {17 if m else 19}px; font-weight: 900">{lk(pp, nm)}<span style="font-size: 13px; font-weight: 700; color: {SUB}">（{gp}）</span></span>
+              <span style="font-size: 13px; color: {SUB}">{lk(tp, tm)}　{len(sc)}試合の採点：{"／".join(f"{v:.1f}" + ("（上限突破）" if v > 10 else "") for v in sc)}</span>
             </span>
             <span style="flex: none; display: flex; flex-direction: column; align-items: flex-end"><span style="font-size: 10px; font-weight: 900; color: {SUB}">大会通算</span><span class="hand" style="font-size: 28px; color: {RED}; line-height: 1">+{pt:.1f}</span></span>
-          </div>""" for i, (nm, gp, tm, pt, sc) in enumerate(leaders))
+          </div>""" for i, (nm, gp, tm, pt, sc, pp, tp) in enumerate(leaders))
         cols = "1fr"
         return f"""<div style="display: flex; flex-direction: column; gap: 12px">
           <h3 style="margin: 0; font-size: {20 if m else 22}px; font-weight: 900; padding-left: 12px; border-left: 6px solid {RED}">{name}</h3>
@@ -328,13 +345,14 @@ def tourney_page(m):
     divs = "".join(div_block(*d) for d in DIV_INFO)
     note = '<p style="margin: 0; font-size: 12px; color: #9FB3D6">「大会通算」は、各試合の採点から及第点の6.0点を引いた分の合計です。10点を超えた「上限突破」の分も数えます（例：11.5点と7.0点なら ＋5.5＋1.0＝＋6.5）。同点のときは、勝利確率を多く動かした選手を上にしています。</p>'
 
-    def game_row(rnd, res, key, cm):
-        return f"""<a href="{U('game:' + key)}" style="display: flex; align-items: center; gap: 14px; padding: {'12px 0' if m else '14px 4px'}; border-bottom: 1px solid #24427A; color: #FFFFFF; text-decoration: none">
+    def game_row(rnd, res, key, cm, teams=None):
+        res = link_teams(res, teams or {})
+        return f"""<div style="display: flex; align-items: center; gap: 14px; padding: {'12px 0' if m else '14px 4px'}; border-bottom: 1px solid #24427A; color: #FFFFFF">
             <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px">
               <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px"><span style="font-size: 12px; color: #9FB3D6">{rnd}</span><span style="font-size: {16 if m else 18}px; font-weight: 900">{res}</span></span>
               <span style="font-size: {13 if m else 14}px; line-height: 1.7; color: #C9D6EA">{cm}</span>
             </span>
-            <span style="flex: none; color: #F3B7BA; font-weight: 900">→</span></a>"""
+            <a href="{U('game:' + key)}" style="flex: none; color: #F3B7BA; font-weight: 900; text-decoration: none; white-space: nowrap">通信簿 →</a></div>"""
     days = ""
     for day, dv in DAYS:
         inner = ""

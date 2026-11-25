@@ -62,6 +62,20 @@ def published():
                   key=lambda g: (g["date"], int(g.get("start", "0:0").split(":")[0]) * 60 + int(g.get("start", "0:0").split(":")[1])))
 
 
+def player_path(g, team, player):
+    """選手ページ（サイトの一番上からのパス）。大会ページがないときは None。"""
+    from brc import paths as P
+    from brc.ids import player_id
+    comp = COMPS.get(g["comp"]) or {}
+    return P.player_page(comp, g["div"], team, player_id(team, player)) if comp.get("path") and player else None
+
+
+def team_path(g, team):
+    from brc import paths as P
+    comp = COMPS.get(g["comp"]) or {}
+    return P.team_page(comp, g["div"], team) if comp.get("path") and team else None
+
+
 def score_line(key):
     r, _, _ = result(key)
     g, f = r["game"], r["final"]
@@ -94,12 +108,14 @@ def today_games():
         r, _, _ = result(g["key"])
         a = r["awards"]
         sc = {x["player"]: x["score"] for x in r["ratings"]}
-        fm = (nm(a["fielder_mvp"]), sc[a["fielder_mvp"]]) if a.get("fielder_mvp") else None
-        pm = (nm(a["pitcher_mvp"]), sc[a["pitcher_mvp"]]) if a.get("pitcher_mvp") else None
+        tm = {x["player"]: x["team"] for x in r["ratings"]}
+        fm = (nm(a["fielder_mvp"]), sc[a["fielder_mvp"]], player_path(g, tm[a["fielder_mvp"]], a["fielder_mvp"])) if a.get("fielder_mvp") else None
+        pm = (nm(a["pitcher_mvp"]), sc[a["pitcher_mvp"]], player_path(g, tm[a["pitcher_mvp"]], a["pitcher_mvp"])) if a.get("pitcher_mvp") else None
         state = "試合終了"
         if "コールド" in g.get("label", ""):
             state = g["label"].split("（")[-1].rstrip("）")
-        out.append((g["label"].replace("（5回コールド）", "").replace("（7回コールド）", ""), score_line(g["key"]), state, fm, pm, "game:" + g["key"]))
+        out.append((g["label"].replace("（5回コールド）", "").replace("（7回コールド）", ""), score_line(g["key"]), state, fm, pm, "game:" + g["key"],
+                    {t: team_path(g, t) for t in (r["game"]["home"], r["game"]["away"])}))
     return out
 
 
@@ -125,7 +141,7 @@ def heroes():
             meta = "・".join(v for v in (x["team"], gr, f"{x['order']}番" if x.get("order") else None, POS_LONG.get(x["pos"], x["pos"])) if v)
             rs = x.get("reasons") or []
             play = f"{rs[0]['text']}（{rs[0]['wpa']:+.2f}）" if rs and rs[0].get("wpa") is not None else (rs[0]["text"] if rs else "")
-            hs.append(dict(kind="野手", name=nm(x["player"]), meta=meta, play=play, score=s, raw=raw, src=score_line(g["key"]), link="game:" + g["key"], img="batter"))
+            hs.append(dict(kind="野手", name=nm(x["player"]), page=player_path(g, x["team"], x["player"]), team=x["team"], team_page=team_path(g, x["team"]), meta=meta, play=play, score=s, raw=raw, src=score_line(g["key"]), link="game:" + g["key"], img="batter"))
         good = [p for p in pits if p[0] >= 7.0]
         if good:
             s, raw, w, g, x = max(good, key=lambda t: (t[0], t[1], t[2]))
@@ -136,7 +152,7 @@ def heroes():
             r_, _, _ = result(g["key"])
             if x["team"] != r_["final"]["winner"]:
                 play += "（敗れたチームから）"
-            hs.append(dict(kind="投手", name=nm(x["player"]), meta=meta, play=play, score=s, raw=raw, src=score_line(g["key"]), link="game:" + g["key"], img="pitcher"))
+            hs.append(dict(kind="投手", name=nm(x["player"]), page=player_path(g, x["team"], x["player"]), team=x["team"], team_page=team_path(g, x["team"]), meta=meta, play=play, score=s, raw=raw, src=score_line(g["key"]), link="game:" + g["key"], img="pitcher"))
         out[DIV_JA[div]] = hs
     return out
 
@@ -155,7 +171,10 @@ def big_play():
         return None
     delta, p, g = best
     title = f"{p['inn']}　{p['who']}の<br>{p['label']}" if p.get("who") and p["side"] == "攻撃" else f"{p['inn']}　{p['title']}"
+    gm = result(g["key"])[0]["game"]
+    bat_team = p["team"] if p["side"] == "攻撃" else (gm["away"] if p["team"] == gm["home"] else gm["home"])
     return dict(game=f"{g['label']}　{score_line(g['key'])}", title=title, delta=delta, team=p["team"],
+                who=p.get("who") or "", who_page=player_path(g, bat_team, p.get("who") or ""),
                 before=p["before"], after=p["after"], link="game:" + g["key"])
 
 
@@ -213,7 +232,8 @@ def leaders(comp_id, div, n=3):
     for (name, team), a in top:
         gr = grade(team, name)
         gp = "・".join(v for v in (gr, a["best"][1]) if v)
-        out.append((nm(name), gp, team, a["pt"], a["sc"]))
+        gx = {"comp": comp_id, "div": div}
+        out.append((nm(name), gp, team, a["pt"], a["sc"], player_path(gx, team, name), team_path(gx, team)))
     return out
 
 
@@ -240,6 +260,8 @@ def days(comp_id):
         dv = []
         for div in ("UNIV", "HS"):
             if div in by[d]:
-                dv.append((DIV_JA[div], [(g["round"], score_line(g["key"]), g["key"], g.get("comment", "")) for g in by[d][div]]))
+                dv.append((DIV_JA[div], [(g["round"], score_line(g["key"]), g["key"], g.get("comment", ""),
+                                          {t: team_path(g, t) for t in (result(g["key"])[0]["game"]["home"], result(g["key"])[0]["game"]["away"])})
+                                         for g in by[d][div]]))
         out.append((date_ja(d), dv))
     return out
