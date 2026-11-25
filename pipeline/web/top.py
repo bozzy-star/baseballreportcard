@@ -19,6 +19,42 @@ COMP = D.COMPS[COMP_ID]
 TODAY = D.date_ja(D.today_date()) if D.today_date() else ""
 TOURNEY_SHORT = COMP.get("short", "")
 TODAY_GAMES = D.today_games()
+import datetime as _dtm  # noqa: E402
+REAL_TODAY = os.environ.get("BRC_TODAY") or _dtm.datetime.now(_dtm.timezone(_dtm.timedelta(hours=9))).date().isoformat()
+IS_TODAY = D.today_date() == REAL_TODAY
+LATEST = "今日" if IS_TODAY else "最新の試合"
+
+
+def _champions():
+    out = []
+    for g in D.published():
+        if g["date"] != D.today_date():
+            continue
+        lab = g.get("label", "")
+        if "決勝" in lab and "準決勝" not in lab:
+            r, _, _ = D.result(g["key"])
+            out.append((lab.split(" ")[0], r["final"]["winner"]))
+    return out
+
+
+CHAMPS = _champions()
+
+
+def _scheduled_today():
+    try:
+        sch = json.loads((pathlib.Path(B.ROOT) / "data" / "schedule.json").read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    out = []
+    for cid, divs in sch.items():
+        for div, gs in divs.items():
+            for g in gs:
+                if g.get("date") == REAL_TODAY and g.get("status") != "final":
+                    out.append((D.DIV_JA.get(div, div) if hasattr(D, "DIV_JA") else ("高校の部" if div == "HS" else "大学の部"), f"{g['away']} 対 {g['home']}"))
+    return out
+
+
+SCHEDULED = [] if IS_TODAY else _scheduled_today()
 HEROES = D.heroes()
 BIG = D.big_play()
 ARCHIVE = []
@@ -136,7 +172,7 @@ def heroes(m):
            f'<div class="paper" style="position: absolute; top: 40px; left: 0; z-index: 10; width: min(440px, 80vw); box-sizing: border-box; padding: 16px 18px; color: {INK}; border-radius: 8px; font-size: 14px; line-height: 2; box-shadow: 0 10px 24px rgba(0,0,0,0.4); border-top: 4px solid {RED}">'
            f'<b style="display: block">今日のヒーローの選び方</b>その日の試合の通信簿から、<b>高校の部・大学の部それぞれ</b>でいちばん点の高い野手と投手を選んでいます。<br>'
            f'・野手は、両チームの打者全員が対象<br>・投手は、7.0点以上の選手がいるときだけ<br>・同点は、丸める前の点数で決定</div></details>')
-    return f'<section aria-label="今日のヒーロー" style="display: flex; flex-direction: column; gap: 18px">{h2("今日のヒーロー", m, tip)}{"".join(blocks)}</section>'
+    return f'<section aria-label="今日のヒーロー" style="display: flex; flex-direction: column; gap: 18px">{h2(LATEST + "のヒーロー", m, tip)}{"".join(blocks)}</section>'
 
 
 def big_play(m):
@@ -144,7 +180,7 @@ def big_play(m):
     if not b:
         return ""
     return f"""<section aria-label="今日いちばん試合を動かしたプレー" style="display: flex; flex-direction: column; gap: 18px">
-      {h2('試合を動かしたプレー' if m else '今日いちばん試合を動かしたプレー', m)}
+      {h2('試合を動かしたプレー' if m else (LATEST + ('' if IS_TODAY else 'で') + 'いちばん試合を動かしたプレー'), m)}
       <a href="{U(b['link'])}" style="display: flex; flex-direction: column; gap: 14px; padding: {18 if m else 26}px; background-color: #0A1222; border: 6px solid #3D5C93; border-radius: 10px; text-decoration: none; color: #FFFFFF">
         <span style="font-size: 13px; color: #9FB3D6">{b['game']}</span>
         <span style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
@@ -204,15 +240,41 @@ def archive(m):
     </section>"""
 
 
+def _today_msg(m):
+    if not SCHEDULED:
+        return '<p style="margin: 0; font-size: 16px; font-weight: 700; color: #C9D6EA">今日の試合はありませんでした。</p>'
+    cards = "".join(f'<div class="paper" style="display: flex; flex-direction: column; gap: 6px; padding: 14px 18px; border-radius: 8px; color: {INK}">'
+                    f'<span style="font-size: 12px; font-weight: 700; color: {SUB}">{d_}</span><span style="font-size: 18px; font-weight: 900">{c}</span>'
+                    f'<span style="font-size: 13px; color: {RED}; font-weight: 700">試合終了後に通信簿を掲載します</span></div>' for d_, c in SCHEDULED)
+    cols = "1fr" if m else "repeat(auto-fit, minmax(240px, 1fr))"
+    return f'<div style="display: grid; grid-template-columns: {cols}; gap: 16px">{cards}</div>'
+
+
+def today_section(m):
+    when = (f'<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: {17 if m else 19}px; font-weight: 900; color: #FFFFFF">{TOURNEY_SHORT}</span>'
+            f'<span style="font-size: 14px; font-weight: 700; color: #F3B7BA">{TODAY}</span></div>')
+    champ = ""
+    if CHAMPS:
+        champ = ('<div style="display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: baseline; padding: 14px 18px; border: 2px solid #D7262E; border-radius: 6px; background-color: #FFFFFF">'
+                 f'<span style="font-weight: 900; color: #D7262E; letter-spacing: 0.1em">{TOURNEY_SHORT} 最終結果</span>'
+                 + "".join(f'<span style="color: #14294F"><span style="font-size: 13px; color: #5B6B86">{d_}　優勝</span>　<b style="font-size: {18 if m else 20}px">{w}</b></span>' for d_, w in CHAMPS)
+                 + '</div>')
+    if IS_TODAY:
+        return f"""<section aria-label="今日の試合" style="display: flex; flex-direction: column; gap: 18px">
+      {h2('今日の試合', m)}{when}{champ}{game_cards(m)}
+    </section>"""
+    return f"""<section aria-label="今日の試合" style="display: flex; flex-direction: column; gap: 18px">
+      {h2('今日の試合', m)}{_today_msg(m)}
+      <h3 style="margin: 8px 0 0; font-size: {19 if m else 22}px; font-weight: 900; color: #FFFFFF">最新の試合</h3>{when}{champ}{game_cards(m)}
+    </section>"""
+
+
 def page(m):
     gap = 44 if m else 60
     return f"""<div style="min-height: 100vh; background-color: #0B1A36; background-image: radial-gradient(circle at 50% 0, #1A3260 0, #0B1A36 60%); color: #FFFFFF; font-family: 'Noto Sans JP', sans-serif; line-height: 1.6">
 {B.header(m)}  {hero_section(m)}
   <main style="max-width: 1120px; margin: 0 auto; padding: {'28px 16px 56px' if m else '48px 24px 72px'}; display: flex; flex-direction: column; gap: {gap}px">
-    <section aria-label="今日の試合" style="display: flex; flex-direction: column; gap: 18px">
-      {h2('今日の試合', m)}<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: {17 if m else 19}px; font-weight: 900; color: #FFFFFF">{TOURNEY_SHORT}</span><span style="font-size: 14px; font-weight: 700; color: #F3B7BA">{TODAY}</span></div>
-      {game_cards(m)}
-    </section>
+    {today_section(m)}
     {heroes(m)}
     {big_play(m)}
     {tournament(m)}
