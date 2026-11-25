@@ -139,23 +139,13 @@ def nm(s):
     return s.replace(" ", "")
 
 
-_LINK = "color: inherit; text-decoration: underline; text-decoration-color: #9AA6BA; text-decoration-thickness: 1px; text-underline-offset: 3px"
-
-
-def tlink(team):
-    from brc import paths
-    if not COMP.get("path"):
-        return team
-    return f'<a href="{R(paths.team_page(COMP, GDIV, team))}" style="{_LINK}">{team}</a>'
-
-
 def plink(x):
     from brc.ids import player_id
     from brc import paths
     if not COMP.get("path"):
         return nm(x["player"])
     href = R(paths.player_page(COMP, GDIV, x["team"], player_id(x["team"], x["player"])))
-    return f'<a href="{href}" style="{_LINK}">{nm(x["player"])}</a>'
+    return f'<a href="{href}" style="color: inherit; text-decoration: underline; text-decoration-color: #C9D6EA; text-underline-offset: 3px">{nm(x["player"])}</a>'
 
 
 def esc(s):
@@ -216,10 +206,10 @@ for x in sorted(L, key=lambda x: -abs(x["home_wp_after"] - x["home_wp_before"]))
             label = f"相手{ERR_JA.get(x.get('error_by') or '', '')}の失策で得点"
         if x is L[-1] and WALKOFF and "サヨナラ" not in label:
             label += "でサヨナラ"
-        plays.append({"inn": f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'}", "who": who, "who_raw": x["batter"] or x.get("runner") or "", "who_team": g[off], "label": label,
+        plays.append({"inn": f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'}", "who": who, "label": label,
                       "team": g[off], "side": "攻撃", "before": round(b), "after": round(af)})
     else:  # 守備側が動かしたプレー（併殺・ピンチでの三振など）
-        plays.append({"inn": f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'}", "who": who, "who_raw": x["batter"] or x.get("runner") or "", "who_team": g[off],
+        plays.append({"inn": f"{x['inn']}回{'表' if x['half'] == 'top' else '裏'}", "who": who,
                       "label": _LABELS.get(x["type"], "凡退").replace("併殺打", "併殺") + "に打ち取る", "team": g[deff], "side": "守り",
                       "before": round(100 - b), "after": round(100 - af)})
 for p in plays:  # 説明を整える
@@ -228,7 +218,6 @@ for p in plays:  # 説明を整える
         p["title"] = f"{p['who']}を{p['label']}"
     else:
         p["title"] = f"{p['who']}の{p['label']}" if p["who"] else p["label"]
-    p["title_html"] = p["title"].replace(p["who"], plink({"team": p["who_team"], "player": p["who_raw"]}), 1) if p["who"] else p["title"]
 
 
 def team_rows(side):
@@ -346,7 +335,7 @@ def inning_table(side, mobile):
             for v in row)
         p = f'<span style="font-size: {10 if mobile else 12}px; font-weight: 700; color: {SUB}; margin-left: {3 if mobile else 8}px">{pos_chain(x)}</span>'
         raw = x["raw_score"]
-        body += (f'<tr><th scope="row" style="text-align: left; font-size: {fs if mobile else fs + 1}px; font-weight: 900; color: {INK}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px">{plink(x)}{p}</th>{cells}'
+        body += (f'<tr><th scope="row" style="text-align: left; font-size: {fs if mobile else fs + 1}px; font-weight: 900; color: {INK}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px">{nm(x["player"])}{p}</th>{cells}'
                  f'<td style="text-align: center"><span class="hand" style="font-size: {18 if mobile else 22}px; color: {score_color(raw)}; line-height: 1">{raw:.1f}</span></td></tr>')
     return f"""<div style="margin-top: {14 if mobile else 18}px; padding-top: {12 if mobile else 16}px; border-top: 2px dashed {LINE}">
             <span style="display: block; font-size: {13 if mobile else 14}px; font-weight: 900; color: {RED}">回ごとの貢献度</span>
@@ -451,7 +440,7 @@ def scoreboard(mobile):
         tds += f'<td style="{cell}; color: #C9D6EA; font-size: {15 if mobile else 20}px">{hits[side]}</td>'
         tds += f'<td style="{cell}; color: #C9D6EA; font-size: {15 if mobile else 20}px">{errs[side]}</td>'
         win = "　<span style=\"color: #D7262E\">●</span>" if g[side] == WIN else ""
-        rows += f'<tr><th scope="row" style="text-align: left; padding: 6px {6 if mobile else 12}px 6px 0; font-size: {14 if mobile else 18}px; font-weight: 900; color: #FFFFFF; white-space: nowrap">{tlink(g[side])}{win}</th>{tds}</tr>'
+        rows += f'<tr><th scope="row" style="text-align: left; padding: 6px {6 if mobile else 12}px 6px 0; font-size: {14 if mobile else 18}px; font-weight: 900; color: #FFFFFF; white-space: nowrap">{g[side]}{win}</th>{tds}</tr>'
     return f"""<div style="padding: {'14px 12px' if mobile else '18px 22px'}; background-color: #0A1222; border: 6px solid #3D5C93; border-radius: 10px; box-shadow: inset 0 0 0 2px #0A1222, inset 0 0 0 4px #24427A; overflow-x: auto">
           <table style="width: 100%; border-collapse: collapse"><thead><tr><th scope="col" style="text-align: left"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">チーム</span></th>{head}</tr></thead><tbody>{rows}</tbody></table>
         </div>"""
@@ -485,11 +474,11 @@ def award_cards(mobile):
         if not mobile:
             out.append(f"""<div class="sheet" style="display: flex; align-items: stretch; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="flex: none; width: 128px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 14px 16px; background-color: {band}; color: #FFFFFF">
-                <span style="display: inline-flex; padding: 3px; background-color: #FFFFFF; border-radius: 999px; align-self: flex-start; margin-bottom: 4px">{badge(label, 44)}</span><span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{tlink(x["team"])}</span></div>
+                <span style="display: inline-flex; padding: 3px; background-color: #FFFFFF; border-radius: 999px; align-self: flex-start; margin-bottom: 4px">{badge(label, 44)}</span><span style="font-size: 18px; font-weight: 900; white-space: nowrap">{label}</span><span style="font-size: 13px; font-weight: 700">{x["team"]}</span></div>
               <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 14px 20px">
                 <span style="display: flex; align-items: center; gap: 12px; flex: none">
                   <img src="{ico}" alt="" aria-hidden="true" style="width: 52px; height: auto; flex: none">
-                  <span style="display: flex; flex-direction: column"><span style="font-size: 26px; font-weight: 900; line-height: 1.25; white-space: nowrap">{plink(x)}</span>
+                  <span style="display: flex; flex-direction: column"><span style="font-size: 26px; font-weight: 900; line-height: 1.25; white-space: nowrap">{nm(who)}</span>
                   <span style="font-size: 14px; color: {SUB}; white-space: nowrap">{role}　{x['stat']}</span></span>
                 </span>
                 <span style="flex: 1 1 260px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; background-color: #FFFFFF; border-left: 4px solid {band}; border-radius: 4px">
@@ -507,12 +496,12 @@ def award_cards(mobile):
         out.append(f"""<div class="sheet" style="display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 0 rgba(0,0,0,0.25); color: {INK}">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background-color: {band}; color: #FFFFFF">
                 <span style="display: inline-flex; align-items: center; gap: 8px"><span style="display: inline-flex; padding: 2px; background-color: #FFFFFF; border-radius: 999px">{badge(label, 30)}</span><span style="font-size: 15px; font-weight: 900; letter-spacing: 0.05em">{label}</span></span>
-                <span style="font-size: 13px; font-weight: 700; white-space: nowrap">{tlink(x["team"])}</span>
+                <span style="font-size: 13px; font-weight: 700; white-space: nowrap">{x["team"]}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px 10px">
                 <img src="{ico}" alt="" aria-hidden="true" style="width: 52px; height: auto; flex: none">
                 <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
-                  <span style="font-size: {26 if mobile else 25}px; font-weight: 900; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{plink(x)}</span>
+                  <span style="font-size: {26 if mobile else 25}px; font-weight: 900; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{nm(who)}</span>
                   <span style="font-size: 14px; font-weight: 700; color: {SUB}">{role}</span>
                 </span>
                 <span style="display: flex; flex-direction: column; align-items: center; flex: none; position: relative; min-width: 84px">
@@ -540,8 +529,8 @@ def plays_list(mobile):
         out.append(f"""<div style="display: flex; align-items: center; gap: 14px; padding: {'12px 14px' if mobile else '14px 18px'}; background-color: #0A1222; border: 2px solid #24427A; border-radius: 8px">
               <span style="width: 32px; height: 32px; border-radius: 999px; background-color: #D7262E; color: #FFFFFF; font-weight: 900; display: flex; align-items: center; justify-content: center; flex: none">{k + 1}</span>
               <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px">
-                <span style="font-size: 12px; color: #9FB3D6">{p['inn']}　{tlink(p['team'])}の{p['side']}</span>
-                <span style="font-size: {16 if mobile else 18}px; font-weight: 900; color: #FFFFFF">{p['title_html']}</span>
+                <span style="font-size: 12px; color: #9FB3D6">{p['inn']}　{p['team']}の{p['side']}</span>
+                <span style="font-size: {16 if mobile else 18}px; font-weight: 900; color: #FFFFFF">{p['title']}</span>
                 <span style="font-size: 12px; color: #C9D6EA">{p['team']}の勝利確率 {p['before']}% → {p['after']}%</span>
               </span>
               <span style="font-size: {28 if mobile else 30}px; font-weight: 900; color: #FFD23F; flex: none">+{delta}%</span>
@@ -600,7 +589,7 @@ def team_table(side, mobile):
         body = "".join(card(x, "bat") for x in bat)
         pbody = "".join(card(x, "pit") for x in pit)
         return f"""<div class="sheet" style="padding: 16px 10px 6px; border-radius: 8px; color: {INK}; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border-top: 6px solid #D7262E">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px"><h3 style="margin: 0; font-size: 20px; font-weight: 900">{tlink(team)}の通信簿</h3><span style="font-size: 13px; font-weight: 900; color: #FFFFFF; background-color: {RED if res == '勝' else '#3D5C93'}; padding: 2px 12px; border-radius: 999px">{res}</span></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px"><h3 style="margin: 0; font-size: 20px; font-weight: 900">{team}の通信簿</h3><span style="font-size: 13px; font-weight: 900; color: #FFFFFF; background-color: {RED if res == '勝' else '#3D5C93'}; padding: 2px 12px; border-radius: 999px">{res}</span></div>
             <span style="display: flex; justify-content: space-between; margin: 10px 4px 0; font-size: 13px; font-weight: 900; color: {RED}"><span>打者</span><span style="font-size: 11px; color: {SUB}; font-weight: 700">右の％＝動かした勝利確率</span></span>
             {body}
             <span style="display: block; margin: 14px 4px 0; font-size: 13px; font-weight: 900; color: {RED}">投手</span>
@@ -623,7 +612,7 @@ def team_table(side, mobile):
               </tr>"""
     thead = f'<tr><th scope="col">打順</th><th scope="col">守備</th>{'<th scope="col">背番号</th>' if HAS_NUM else ''}<th scope="col">選手・成績</th><th scope="col">貢献度</th><th scope="col" style="text-align: center">採点</th><th scope="col">担任からの一言</th></tr>'
     return f"""<div class="sheet" style="padding: 20px 22px; border-radius: 8px; color: {INK}; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border-top: 6px solid #D7262E">
-            <div style="display: flex; align-items: center; gap: 12px"><h3 style="margin: 0; font-size: 22px; font-weight: 900">{tlink(team)}の通信簿</h3><span style="font-size: 13px; font-weight: 900; color: #FFFFFF; background-color: {RED if res == '勝' else '#3D5C93'}; padding: 2px 12px; border-radius: 999px">{res}</span></div>
+            <div style="display: flex; align-items: center; gap: 12px"><h3 style="margin: 0; font-size: 22px; font-weight: 900">{team}の通信簿</h3><span style="font-size: 13px; font-weight: 900; color: #FFFFFF; background-color: {RED if res == '勝' else '#3D5C93'}; padding: 2px 12px; border-radius: 999px">{res}</span></div>
             <div style="overflow-x: auto; margin-top: 10px"><table class="rc" style="width: 100%; border-collapse: collapse">
               <caption style="text-align: left; font-size: 14px; font-weight: 900; color: {RED}; padding: 6px 0">打者</caption>
               <thead>{thead}</thead><tbody>{''.join(row(x, 'bat') for x in bat)}</tbody>

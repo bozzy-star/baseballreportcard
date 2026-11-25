@@ -34,23 +34,6 @@ def R(path):
     return B.R(path)
 
 
-def lk(path, text):
-    return f'<a href="{R(path)}" style="{B._LINK}">{text}</a>' if path else text
-
-
-def tl(comp, div, team):
-    return lk(P.team_page(comp, div, team), esc(team))
-
-
-def teams_in(comp, g, line):
-    r, _, _ = D.result(g["key"])
-    for t in sorted((r["game"]["home"], r["game"]["away"]), key=len, reverse=True):
-        line = line.replace(esc(t), "\0" + str(len(t)), 1)
-    for t in (r["game"]["home"], r["game"]["away"]):
-        line = line.replace("\0" + str(len(t)), tl(comp, g["div"], t), 1)
-    return line
-
-
 def collect(cid):
     comp = D.COMPS[cid]
     ps = {}
@@ -148,7 +131,7 @@ def mini_badges(p, size=16):
 
 def player_page(comp, p, mobile):
     cr = comp_crumbs(comp, (D.DIV_JA[p["div"]], P.div_page(comp, p["div"])), (p["team"], P.team_page(comp, p["div"], p["team"])), (p["name"], None))
-    sub = "・".join([tl(comp, p["div"], p["team"])] + [esc(v) for v in (p["grade"], p["pos"]) if v])
+    sub = "・".join(v for v in (p["team"], p["grade"], p["pos"]) if v)
     stats = [("出場", f'{len(p["games"])}<span style="font-size: 14px">試合</span>'), ("大会通算", f'{p["total"]:+.1f}'), ("最高", f'{p["best"]:.1f}')]
     stat_html = "".join(f'<div style="flex: 1; min-width: 90px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700; color: {SUB}">{k}</span>'
                         f'<span class="hand" style="font-size: {34 if mobile else 40}px; color: {RED}; line-height: 1.1">{v}</span></div>' for k, v in stats)
@@ -169,7 +152,7 @@ def player_page(comp, p, mobile):
           </span></a>"""
     body = f"""<div style="display: flex; flex-direction: column; gap: 6px">
       {h1(p['name'], mobile, 'の通信簿')}
-      <span style="font-size: {15 if mobile else 17}px; font-weight: 700; color: #C9D6EA">{sub}</span>
+      <span style="font-size: {15 if mobile else 17}px; font-weight: 700; color: #C9D6EA">{esc(sub)}</span>
       {awards}
     </div>
     <div class="sheet" style="padding: {'14px 16px' if mobile else '18px 24px'}; border-radius: 8px; color: {INK}; display: flex; flex-wrap: wrap; gap: 12px; border-top: 6px solid {RED}">{stat_html}
@@ -188,7 +171,7 @@ def rank_table(lst, mobile):
     rows = ""
     for i, p in enumerate(lst):
         sc = "／".join(f"{q['raw']:.1f}" for q in reversed(p["games"]))
-        team = tl(D.COMPS[p["comp"]], p["div"], p["team"]) + (f'<span style="color: {SUB}">（{esc(p["grade"])}）</span>' if p["grade"] else "")
+        team = esc(p["team"]) + (f'<span style="color: {SUB}">（{esc(p["grade"])}）</span>' if p["grade"] else "")
         rows += f"""<tr>
           <td style="text-align: center"><span class="hand" style="font-size: 24px; color: {RED}; line-height: 1">{i + 1}</span></td>
           <td><a href="{R(p['page'])}" style="font-weight: 900; font-size: 16px; color: {INK}; white-space: nowrap">{esc(p['name'])}</a> <span style="white-space: nowrap">{mini_badges(p, 18)}</span>
@@ -261,11 +244,11 @@ def div_index(comp, ps, div, mobile):
         best = max(teams[team], key=lambda p: (p["total"], p["wpa"]))
         last = games[-1]
         res = " ".join(f'<span style="color: {RED if q["res"] == "勝" else "#3D5C93"}; font-weight: 900">{q["res"]}</span>' for q in games)
-        cards += f"""<div class="sheet" style="display: flex; flex-direction: column; gap: 6px; padding: {'12px 14px' if mobile else '16px 18px'}; border-radius: 8px; color: {INK}; text-decoration: none; border-top: 5px solid {RED}">
-          <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><span style="font-size: {19 if mobile else 21}px; font-weight: 900">{tl(comp, div, team)}</span><span style="font-size: 13px; color: {SUB}; white-space: nowrap">{w}勝{l_}敗</span></span>
+        cards += f"""<a href="{R(P.team_page(comp, div, team))}" class="sheet" style="display: flex; flex-direction: column; gap: 6px; padding: {'12px 14px' if mobile else '16px 18px'}; border-radius: 8px; color: {INK}; text-decoration: none; border-top: 5px solid {RED}">
+          <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px"><span style="font-size: {19 if mobile else 21}px; font-weight: 900">{esc(team)}</span><span style="font-size: 13px; color: {SUB}; white-space: nowrap">{w}勝{l_}敗</span></span>
           <span style="font-size: 13px">{res}　<span style="color: {SUB}">最終：{D.md_ja(last['date'])} 対{esc(last['opp'])} {last['score']}</span></span>
-          <span style="font-size: 13px; color: {SUB}">チーム最高：<span style="font-weight: 900; color: {INK}">{lk(best['page'], esc(best['name']))}</span>（大会通算 {best['total']:+.1f}）</span>
-        </div>"""
+          <span style="font-size: 13px; color: {SUB}">チーム最高：<span style="font-weight: 900; color: {INK}">{esc(best['name'])}</span>（大会通算 {best['total']:+.1f}）</span>
+        </a>"""
     other = [d for d in divs_of(comp, ps) if d != div]
     body = f"""<div style="display: flex; flex-direction: column; gap: 8px">
       {h1(comp['name'] + '　' + D.DIV_JA[div], mobile)}
@@ -340,11 +323,11 @@ def day_page(comp, cid, date, mobile):
         sel = [g for g in gs if g["div"] == div]
         if not sel:
             continue
-        rows = "".join(f"""<div class="sheet" style="display: flex; flex-direction: column; gap: 4px; padding: {'12px 14px' if mobile else '16px 20px'}; border-radius: 8px; color: {INK}">
+        rows = "".join(f"""<a href="{R(P.game_page(comp, g))}" class="sheet" style="display: flex; flex-direction: column; gap: 4px; padding: {'12px 14px' if mobile else '16px 20px'}; border-radius: 8px; color: {INK}; text-decoration: none">
             <span style="font-size: 12px; color: {SUB}">{esc(g.get('round', ''))}{('　' + esc(g.get('start', '')) + '開始') if g.get('start') else ''}</span>
-            <span style="font-size: {17 if mobile else 20}px; font-weight: 900">{teams_in(comp, g, esc(D.score_line(g['key'])))}</span>
+            <span style="font-size: {17 if mobile else 20}px; font-weight: 900">{esc(D.score_line(g['key']))}</span>
             <span style="font-size: 13px; line-height: 1.8">{esc(g.get('comment', ''))}</span>
-            <a href="{R(P.game_page(comp, g))}" style="font-size: 13px; font-weight: 900; color: {RED}; text-decoration: none">この試合の通信簿 →</a></div>""" for g in sel)
+            <span style="font-size: 13px; font-weight: 900; color: {RED}">この試合の通信簿 →</span></a>""" for g in sel)
         blocks += f'<section style="display: flex; flex-direction: column; gap: 10px">{B.h2(D.DIV_JA[div], mobile)}{rows}</section>'
     days = sorted({g["date"] for g in D.published() if g["comp"] == cid})
     nav = "".join(f'<a href="{R(P.day_page(comp, d))}" style="font-size: 13px; font-weight: 700; color: {"#0B1A36" if d == date else "#FFFFFF"}; background-color: {"#FFFFFF" if d == date else "transparent"}; text-decoration: none; padding: 4px 12px; border: 1px solid #3D5C93; border-radius: 999px; white-space: nowrap">{D.md_ja(d)}</a>' for d in days)
